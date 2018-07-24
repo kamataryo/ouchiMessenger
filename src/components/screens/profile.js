@@ -1,11 +1,15 @@
 // @flow
 
 import React from 'react'
+import styled from 'styled-components'
+
+// comopnents
 import { SafeAreaView } from 'react-navigation'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Username from 'src/components/commons/username'
-import styled from 'styled-components'
-import { bgGray } from 'src/colors'
+import Username from '../commons/username'
+
+// libs
+import { bgGray } from '../../colors'
 
 const ProfileBackground = styled.View`
   background-color: ${bgGray};

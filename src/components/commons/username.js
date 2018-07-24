@@ -6,7 +6,7 @@ import { View, Text } from 'react-native'
 import { FormLabel, FormInput } from 'react-native-elements'
 
 // action creators
-import { createActions as createProfileActions } from 'src/reducers/profile'
+import { createActions as createProfileActions } from '../../reducers/profile'
 
 type Props = {
   // stateProps

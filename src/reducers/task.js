@@ -1,6 +1,6 @@
 // @flow
 
-import { Task } from 'src/types/task'
+import { Task } from '../types/task'
 
 type TaskState = {
   data: Task[],

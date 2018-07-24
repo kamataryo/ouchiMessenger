@@ -2,9 +2,13 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { Task } from 'src/types/task'
-import { SafeAreaView } from 'react-navigation'
+
+// types
+import { Task } from '../../types/task'
+
+// components
 import { Text } from 'react-native'
+import { SafeAreaView } from 'react-navigation'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 type Props = {

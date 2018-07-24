@@ -26,7 +26,8 @@
     "test": "jest",
     "lint": "eslint --cache --ext=js .",
     "lint:prettier": "prettier-eslint \"./**/*.js\" --write",
-    "flow": "flow"
+    "flow": "flow",
+    "flow-stop": "flow stop"
   },
   "jest": {
     "preset": "jest-expo"
