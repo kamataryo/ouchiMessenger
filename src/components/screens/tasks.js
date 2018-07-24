@@ -3,7 +3,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Task } from 'src/types/task'
-import { Text, View } from 'react-native'
+import { SafeAreaView } from 'react-navigation'
+import { Text } from 'react-native'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 type props = {
   tasks: Task[],
@@ -13,6 +15,13 @@ export class Tasks extends React.PureComponent<props> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'タスク',
+      tabBarIcon: ({ tintColor, focused }) => (
+        <Ionicons
+          name={ focused ? 'ios-checkbox' : 'ios-checkbox-outline' }
+          size={ 26 }
+          style={ { color: tintColor } }
+        />
+      ),
     }
   }
 
@@ -23,14 +32,14 @@ export class Tasks extends React.PureComponent<props> {
   render() {
     const { tasks } = this.props
     return (
-      <View>
+      <SafeAreaView>
         <Text>{'タスク'}</Text>
         <Text>{'タスク'}</Text>
         <Text>{'タスク'}</Text>
         <Text>{'タスク'}</Text>
         <Text>{'タスク'}</Text>
-        {tasks.map(task => <Text key={task.id}>{task.title}</Text>)}
-      </View>
+        {tasks.map(task => <Text key={ task.id }>{task.title}</Text>)}
+      </SafeAreaView>
     )
   }
 }
