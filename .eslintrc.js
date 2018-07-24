@@ -12,11 +12,12 @@ module.exports = {
       jsx: true,
     },
   },
-  plugins: ['import', 'react'],
+  plugins: ['import', 'react', 'flowtype'],
   extends: [
     'eslint:recommended',
     'plugin:import/errors',
     'plugin:react/recommended',
+    'plugin:flowtype/recommended',
   ],
   rules: {
     'array-callback-return': ['error'],
