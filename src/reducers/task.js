@@ -1,13 +1,6 @@
 // @flow
 
-type Task = {
-  title: string,
-  description: string,
-  category: string,
-  createdAt: string,
-  createdBy: string,
-  done: boolean,
-}
+import { Task } from 'src/types/task'
 
 type TaskState = {
   data: Task[],
