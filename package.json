@@ -24,7 +24,7 @@
     "android": "react-native-scripts android",
     "ios": "react-native-scripts ios",
     "test": "jest",
-    "lint:es": "eslint --cache --ext=js .",
+    "lint": "eslint --cache --ext=js .",
     "lint:prettier": "prettier-eslint \"./**/*.js\" --write",
     "flow": "flow"
   },
@@ -33,8 +33,10 @@
   },
   "dependencies": {
     "expo": "^27.0.1",
+    "immutability-helper": "^2.7.1",
     "react": "16.3.1",
     "react-native": "~0.55.2",
+    "react-native-elements": "^0.19.1",
     "react-native-vector-icons": "^4.6.0",
     "react-navigation": "^2.9.0",
     "react-redux": "^5.0.7",

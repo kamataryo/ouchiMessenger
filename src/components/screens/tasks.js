@@ -7,11 +7,11 @@ import { SafeAreaView } from 'react-navigation'
 import { Text } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-type props = {
+type Props = {
   tasks: Task[],
 }
 
-export class Tasks extends React.PureComponent<props> {
+export class Tasks extends React.PureComponent<Props> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'タスク',

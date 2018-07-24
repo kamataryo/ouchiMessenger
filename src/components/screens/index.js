@@ -3,16 +3,17 @@ import Tasks from './tasks'
 import Profile from './profile'
 
 const RouteConfigs = {
-  Tasks: {
+  tasks: {
     screen: Tasks,
   },
-  Profile: {
+  profile: {
     screen: Profile,
   },
 }
 
 const BottomTabNavigatorConfig = {
-  initialRouteName: 'Tasks',
+  // initialRouteName: 'tasks',
+  initialRouteName: 'profile',
 }
 
 export const RootStack = createBottomTabNavigator(

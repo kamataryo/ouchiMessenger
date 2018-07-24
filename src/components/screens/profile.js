@@ -1,11 +1,16 @@
 // @flow
 
 import React from 'react'
-import { connect } from 'react-redux'
-import { Task } from 'src/types/task'
 import { SafeAreaView } from 'react-navigation'
-import { Text } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import Username from 'src/components/commons/username'
+import styled from 'styled-components'
+import { bgGray } from 'src/colors'
+
+const ProfileBackground = styled.View`
+  background-color: ${bgGray};
+  height: 100%;
+`
 
 type props = {}
 
@@ -30,19 +35,13 @@ export class Tasks extends React.PureComponent<props> {
    */
   render() {
     return (
-      <SafeAreaView>
-        <Text>{'ユーザー'}</Text>
-        <Text>{'ユーザー'}</Text>
-        <Text>{'ユーザー'}</Text>
-        <Text>{'ユーザー'}</Text>
-        <Text>{'ユーザー'}</Text>
-      </SafeAreaView>
+      <ProfileBackground>
+        <SafeAreaView>
+          <Username />
+        </SafeAreaView>
+      </ProfileBackground>
     )
   }
 }
 
-export const mapStateToProps = state => ({
-  tasks: [],
-})
-
-export default connect(mapStateToProps)(Tasks)
+export default Tasks
