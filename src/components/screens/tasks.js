@@ -1,31 +1,31 @@
 // @flow
 
+// types
+import type { Task } from '../../types/task'
+
 import React from 'react'
 import { connect } from 'react-redux'
-
-// types
-import { Task } from '../../types/task'
 
 // components
 import { Text } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+
+// hocs
+import tabBarIconHOC from '../../hocs/tab-bar-icon'
 
 type Props = {
   tasks: Task[],
 }
 
 export class Tasks extends React.PureComponent<Props> {
-  static navigationOptions = ({ navigation }) => {
+  /**
+   * [navigationOptions description]
+   * @type {{navigation: function}} args navigation args
+   */
+  static navigationOptions = () => {
     return {
       title: 'タスク',
-      tabBarIcon: ({ tintColor, focused }) => (
-        <Ionicons
-          name={ focused ? 'ios-checkbox' : 'ios-checkbox-outline' }
-          size={ 26 }
-          style={ { color: tintColor } }
-        />
-      ),
+      tabBarIcon: tabBarIconHOC('checkbox'),
     }
   }
 
@@ -48,7 +48,7 @@ export class Tasks extends React.PureComponent<Props> {
   }
 }
 
-export const mapStateToProps = state => ({
+export const mapStateToProps = () => ({
   tasks: [],
 })
 

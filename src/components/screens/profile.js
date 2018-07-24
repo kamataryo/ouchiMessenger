@@ -5,8 +5,10 @@ import styled from 'styled-components'
 
 // comopnents
 import { SafeAreaView } from 'react-navigation'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import Username from '../commons/username'
+
+// HOCs
+import tabBarIconHOC from '../../hocs/tab-bar-icon'
 
 // libs
 import { bgGray } from '../../colors'
@@ -19,17 +21,14 @@ const ProfileBackground = styled.View`
 type props = {}
 
 export class Tasks extends React.PureComponent<props> {
-  static navigationOptions = ({ navigation }) => {
+  /**
+   * [navigationOptions description]
+   * @type {{navigation: function}} args navigation args
+   */
+  static navigationOptions = () => {
     return {
       title: 'ユーザー',
-      tabBarIcon: ({ tintColor, focused }) => (
-        <Ionicons
-          name={ focused ? 'ios-paw' : 'ios-paw-outline' }
-          size={ 26 }
-          style={ { color: tintColor } }
-        />
-      ),
-      headerForceInset: { top: '24px' },
+      tabBarIcon: tabBarIconHOC('paw'),
     }
   }
 
