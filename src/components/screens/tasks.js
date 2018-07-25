@@ -42,7 +42,7 @@ export class Tasks extends React.PureComponent<Props> {
         <Text>{'タスク'}</Text>
         <Text>{'タスク'}</Text>
         <Text>{'タスク'}</Text>
-        {tasks.map(task => <Text key={ task.id }>{task.title}</Text>)}
+        {tasks.map(task => <Text key={ task.title }>{task.title}</Text>)}
       </SafeAreaView>
     )
   }
