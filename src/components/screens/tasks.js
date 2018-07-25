@@ -8,9 +8,12 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 // components
-import { View, TouchableOpacity } from 'react-native'
-import { Header } from 'react-native-elements'
+import { View, Button, TouchableOpacity } from 'react-native'
+import { Header, FormLabel, FormInput } from 'react-native-elements'
+
 import TaskRow from '../commons/task-row'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Modal from 'react-native-modal'
 
 // hocs
 import tabBarIconHOC from '../../hocs/tab-bar-icon'
@@ -24,6 +27,12 @@ type Props = {
   tasks: Task[],
   updateTasks: (tasks: Task[]) => void,
   toggleTask: (index: number) => void,
+  addTask: (task: Task) => void,
+}
+
+type State = {
+  isModalOpen: boolean,
+  editingTask: any,
 }
 
 type RenderItemProps = {
@@ -35,7 +44,7 @@ const FlatList = styled.FlatList`
   height: 100%;
 `
 
-export class Tasks extends React.PureComponent<Props> {
+export class Tasks extends React.PureComponent<Props, State> {
   /**
    * [navigationOptions description]
    * @type {{navigation: function}} args navigation args
@@ -54,6 +63,7 @@ export class Tasks extends React.PureComponent<Props> {
    */
   constructor(props: Props) {
     super(props)
+    this.state = { isModalOpen: false, editingTask: {} }
     // set demodata
     // TODO: remove this
     setTimeout(() => this.props.updateTasks(demoTasks), 1000)
@@ -67,12 +77,38 @@ export class Tasks extends React.PureComponent<Props> {
     </TouchableOpacity>
   )
 
+  toggleModal = () =>
+    this.setState({ ...this.state, isModalOpen: !this.state.isModalOpen })
+
+  updateEditingTask = (key: string) => (value: any) =>
+    this.setState({
+      ...this.state,
+      editingTask: { ...this.state.editingTask, [key]: value },
+    })
+
+  resetEditingTask = () => this.setState({ ...this.state, editingTask: {} })
+
+  onRegisterClick = () => {
+    // TODO serialize and obtain id
+    const nextTask = { ...this.state.editingTask, id: Date() }
+    this.props.addTask(nextTask)
+    this.resetEditingTask()
+    this.toggleModal()
+  }
+
+  onCancelClick = () => {
+    this.resetEditingTask()
+    this.toggleModal()
+  }
+
   /**
    * render
    * @return {ReactElement|null|false} render a React element.
    */
   render() {
+    const { isModalOpen, editingTask } = this.state
     const { tasks } = this.props
+    console.log(tasks)
     return (
       <View>
         <Header
@@ -80,8 +116,36 @@ export class Tasks extends React.PureComponent<Props> {
             text: 'お仕事',
             style: { color: textWhite },
           } }
+          rightComponent={
+            <Ionicons
+              name={ 'ios-add' }
+              size={ 26 }
+              style={ { color: textWhite, padding: 20 } }
+              onPress={ this.toggleModal }
+            />
+          }
         />
         <FlatList data={ tasks } renderItem={ this.renderItem } />
+        <Modal isVisible={ isModalOpen }>
+          <View>
+            <View>
+              <FormLabel>{'タイトル'}</FormLabel>
+              <FormInput
+                value={ editingTask.title }
+                onChangeText={ this.updateEditingTask('title') }
+              />
+            </View>
+            <View>
+              <FormLabel>{'概要'}</FormLabel>
+              <FormInput
+                value={ editingTask.description }
+                onChangeText={ this.updateEditingTask('description') }
+              />
+            </View>
+            <Button title={ '追加' } onPress={ this.onRegisterClick } />
+            <Button title={ 'キャンセル' } onPress={ this.onCancelClick } />
+          </View>
+        </Modal>
       </View>
     )
   }
@@ -89,7 +153,10 @@ export class Tasks extends React.PureComponent<Props> {
 
 export const mapStateToProps = (state: any) => {
   return {
-    tasks: state.task.data.map(task => ({ ...task, key: task.id.toString() })),
+    tasks: state.task.data.map(task => ({
+      ...task,
+      key: (task.id || '').toString(),
+    })),
   }
 }
 
@@ -97,6 +164,7 @@ export const mapDispatchToProps = (dispatch: any) => ({
   updateTasks: (tasks: Task[]) =>
     dispatch(createTaskActions.updateTasks(tasks)),
   toggleTask: (index: number) => dispatch(createTaskActions.toggleTask(index)),
+  addTask: (task: Task) => dispatch(createTaskActions.addTask(task)),
 })
 
 export default connect(

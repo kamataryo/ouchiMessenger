@@ -9,6 +9,7 @@ import update from 'immutability-helper'
 
 const UPDATE_TASKS = 'TASKS.UPDATE_TASKS'
 const TOGGLE_TASK = 'TASKS.TOGGLE_TASK'
+const ADD_TASK = 'TASKS.ADD_TASK'
 
 type UpdateTasksAction = {
   type: typeof UPDATE_TASKS,
@@ -20,11 +21,16 @@ type ToggleTaskAction = {
   payload: { index: number },
 }
 
+type AddTaskAction = {
+  type: typeof ADD_TASK,
+  payload: { task: Task },
+}
+
 export const initialState: TaskState = {
   data: [],
 }
 
-type TaskActions = UpdateTasksAction | ToggleTaskAction
+type TaskActions = UpdateTasksAction | ToggleTaskAction | AddTaskAction
 
 export const createActions = {
   updateTasks: (tasks: Task[]): UpdateTasksAction => ({
@@ -34,6 +40,10 @@ export const createActions = {
   toggleTask: (index: number): ToggleTaskAction => ({
     type: TOGGLE_TASK,
     payload: { index },
+  }),
+  addTask: (task: Task): AddTaskAction => ({
+    type: ADD_TASK,
+    payload: { task },
   }),
 }
 
@@ -55,6 +65,11 @@ export const reducer = (
           done: { $set: !state.data[index].done },
         },
       },
+    })
+  } else if (action.type === ADD_TASK) {
+    const addTaskAction: AddTaskAction = action
+    return update(state, {
+      data: { $push: [addTaskAction.payload.task] },
     })
   } else {
     return state
