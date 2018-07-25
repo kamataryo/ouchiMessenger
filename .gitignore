@@ -75,3 +75,6 @@ typings/
 
 # flow
 flow-typed/
+
+# secret
+.env.js
