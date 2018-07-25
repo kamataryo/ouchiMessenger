@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import { FormLabel, FormInput } from 'react-native-elements'
 
 // action creators
@@ -31,11 +31,11 @@ export class Username extends React.Component<Props> {
    * @return {ReactElement|null|false} render a React element.
    */
   render() {
+    const { username, update } = this.props
     return (
       <View>
         <FormLabel>{'お名前'}</FormLabel>
-        <FormInput onChangeText={ this.props.update } />
-        <Text>{this.props.username}</Text>
+        <FormInput value={ username } onChangeText={ update } />
       </View>
     )
   }
