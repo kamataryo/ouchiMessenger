@@ -7,11 +7,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 // components
-import { Text } from 'react-native'
-import { SafeAreaView } from 'react-navigation'
+import { Header } from 'react-native-elements'
 
 // hocs
 import tabBarIconHOC from '../../hocs/tab-bar-icon'
+import { textWhite } from '../../colors'
 
 type Props = {
   tasks: Task[],
@@ -35,15 +35,14 @@ export class Tasks extends React.PureComponent<Props> {
    */
   render() {
     const { tasks } = this.props
+    console.log(tasks)
     return (
-      <SafeAreaView>
-        <Text>{'タスク'}</Text>
-        <Text>{'タスク'}</Text>
-        <Text>{'タスク'}</Text>
-        <Text>{'タスク'}</Text>
-        <Text>{'タスク'}</Text>
-        {tasks.map(task => <Text key={ task.title }>{task.title}</Text>)}
-      </SafeAreaView>
+      <Header
+        centerComponent={ {
+          text: 'お仕事',
+          style: { color: textWhite },
+        } }
+      />
     )
   }
 }

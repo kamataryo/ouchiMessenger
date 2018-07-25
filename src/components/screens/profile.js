@@ -4,14 +4,14 @@ import React from 'react'
 import styled from 'styled-components'
 
 // comopnents
-import { SafeAreaView } from 'react-navigation'
 import Username from '../commons/username'
+import { Header } from 'react-native-elements'
 
 // HOCs
 import tabBarIconHOC from '../../hocs/tab-bar-icon'
 
 // libs
-import { bgGray } from '../../colors'
+import { bgGray, textWhite } from '../../colors'
 
 const ProfileBackground = styled.View`
   background-color: ${bgGray};
@@ -39,9 +39,13 @@ export class Tasks extends React.PureComponent<props> {
   render() {
     return (
       <ProfileBackground>
-        <SafeAreaView>
-          <Username />
-        </SafeAreaView>
+        <Header
+          centerComponent={ {
+            text: 'ユーザー',
+            style: { color: textWhite },
+          } }
+        />
+        <Username />
       </ProfileBackground>
     )
   }
