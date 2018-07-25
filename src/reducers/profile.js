@@ -3,13 +3,7 @@
 // libs
 import update from 'immutability-helper'
 
-type ProfileState = {
-  username: string,
-}
-
-export const initialState: ProfileState = {
-  username: '',
-}
+type ProfileState = { username: string }
 
 const UPDATE_USERNAME = 'PROFILE.UPDATE_USERNAME'
 
@@ -18,6 +12,10 @@ type UpdateUsernameAction = {
   payload: {
     username: string,
   },
+}
+
+export const initialState: ProfileState = {
+  username: '',
 }
 
 type ProfileActions = UpdateUsernameAction
