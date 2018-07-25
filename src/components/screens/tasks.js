@@ -66,7 +66,8 @@ export class Tasks extends React.PureComponent<Props, State> {
     this.state = { isModalOpen: false, editingTask: {} }
     // set demodata
     // TODO: remove this
-    setTimeout(() => this.props.updateTasks(demoTasks), 1000)
+    props.tasks.length === 0 &&
+      setTimeout(() => this.props.updateTasks(demoTasks), 1000)
   }
 
   renderItem = ({ item, index }: RenderItemProps) => (
@@ -108,7 +109,7 @@ export class Tasks extends React.PureComponent<Props, State> {
   render() {
     const { isModalOpen, editingTask } = this.state
     const { tasks } = this.props
-    console.log(tasks)
+
     return (
       <View>
         <Header

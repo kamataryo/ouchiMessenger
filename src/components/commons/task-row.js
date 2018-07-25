@@ -2,14 +2,14 @@
 
 import React from 'react'
 
-import { Text, View } from 'react-native'
+import { View } from 'react-native'
 import Swipeout from 'react-native-swipeout'
 import styled from 'styled-components'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import type { Task } from '../../types/task'
-import { bgGray, textGreen, textPaleGray } from '../../colors'
-const swipeoutButtons = [{ text: 'お願い！', textStyle: { background: 'red' } }]
+import { bgGray, textGreen, textGray, textPaleGray } from '../../colors'
+const swipeoutButtons = [{ text: 'お願い！' }, { text: '削除' }]
 
 type Props = {
   task: Task,
@@ -27,7 +27,18 @@ const OuterRow = styled.View`
 const InnerRow = styled.View`
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
+`
+
+const Title = styled.Text`
+  font-size: 16px;
+  color: ${textGray};
+  margin: 2px;
+`
+
+const Description = styled.Text`
+  font-size: 12px;
+  margin: 2px;
 `
 
 export const TaskRow = ({ task }: Props) => {
@@ -44,8 +55,8 @@ export const TaskRow = ({ task }: Props) => {
             style={ { color: task.done ? textGreen : textPaleGray, padding: 15 } }
           />
           <InnerRow>
-            <Text>{task.title}</Text>
-            <Text>{task.description}</Text>
+            <Title>{task.title}</Title>
+            <Description>{task.description}</Description>
           </InnerRow>
         </OuterRow>
       </View>
