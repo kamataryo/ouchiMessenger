@@ -10,6 +10,7 @@ import update from 'immutability-helper'
 const UPDATE_TASKS = 'TASKS.UPDATE_TASKS'
 const TOGGLE_TASK = 'TASKS.TOGGLE_TASK'
 const ADD_TASK = 'TASKS.ADD_TASK'
+const DELETE_TASK = 'TASKS.DELETE_TASK'
 
 type UpdateTasksAction = {
   type: typeof UPDATE_TASKS,
@@ -26,11 +27,20 @@ type AddTaskAction = {
   payload: { task: Task },
 }
 
+type DeleteTaskAction = {
+  type: typeof DELETE_TASK,
+  payload: { index: number },
+}
+
 export const initialState: TaskState = {
   data: [],
 }
 
-type TaskActions = UpdateTasksAction | ToggleTaskAction | AddTaskAction
+type TaskActions =
+  | UpdateTasksAction
+  | ToggleTaskAction
+  | AddTaskAction
+  | DeleteTaskAction
 
 export const createActions = {
   updateTasks: (tasks: Task[]): UpdateTasksAction => ({
@@ -44,6 +54,10 @@ export const createActions = {
   addTask: (task: Task): AddTaskAction => ({
     type: ADD_TASK,
     payload: { task },
+  }),
+  deleteTask: (index: number): DeleteTaskAction => ({
+    type: DELETE_TASK,
+    payload: { index },
   }),
 }
 
@@ -70,6 +84,14 @@ export const reducer = (
     const addTaskAction: AddTaskAction = action
     return update(state, {
       data: { $push: [addTaskAction.payload.task] },
+    })
+  } else if (action.type === DELETE_TASK) {
+    const deleteTaskAction: DeleteTaskAction = action
+    const index = deleteTaskAction.payload.index
+    return update(state, {
+      data: {
+        $splice: [[index, 1]],
+      },
     })
   } else {
     return state
