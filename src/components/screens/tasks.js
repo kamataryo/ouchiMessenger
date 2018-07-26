@@ -95,7 +95,7 @@ export class Tasks extends React.PureComponent<Props, State> {
 
   itemProps = {
     toggleTask: (task, index) => () => {
-      const updatedAt = moment(Date()).format('hh:mm')
+      const updatedAt = moment(Date()).format('HH:mm')
       const updatedBy = this.props.username
       this.props.toggleTask(index, updatedAt, updatedBy)
       dynamoPut({ ...task, updatedAt, updatedBy, done: !task.done }).catch(() =>
@@ -158,7 +158,7 @@ export class Tasks extends React.PureComponent<Props, State> {
     const { tasks } = this.props
 
     return (
-      <View>
+      <View style={ { paddingBottom: 67 } }>
         <Header
           leftComponent={
             <Ionicons
