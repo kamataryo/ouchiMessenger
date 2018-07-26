@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 // components
-import { View, Button, TouchableOpacity } from 'react-native'
+import { View, Button } from 'react-native'
 import { Header, FormLabel, FormInput } from 'react-native-elements'
 
 import TaskRow from '../commons/task-row'
@@ -34,11 +34,6 @@ type Props = {
 type State = {
   isModalOpen: boolean,
   editingTask: any,
-}
-
-type RenderItemProps = {
-  item: Task,
-  index: number,
 }
 
 const FlatList = styled.FlatList`
@@ -71,7 +66,7 @@ export class Tasks extends React.PureComponent<Props, State> {
       setTimeout(() => this.props.updateTasks(demoTasks), 1000)
   }
 
-  renderItem = ({ item, index }: RenderItemProps) => (
+  renderItem = ({ item, index }: any) => (
     <TaskRow
       task={ item }
       toggleTask={ () => this.props.toggleTask(index) }
