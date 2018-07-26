@@ -12,8 +12,8 @@ const RouteConfigs = {
 }
 
 const BottomTabNavigatorConfig = {
-  // initialRouteName: 'tasks',
-  initialRouteName: 'profile',
+  initialRouteName: 'tasks',
+  // initialRouteName: 'profile',
 }
 
 export const RootStack = createBottomTabNavigator(

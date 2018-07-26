@@ -11,7 +11,8 @@ import { Header } from 'react-native-elements'
 import tabBarIconHOC from '../../hocs/tab-bar-icon'
 
 // libs
-import { bgGray, textWhite } from '../../colors'
+import { bgGray } from '../../colors'
+import { headerTitleStyle } from '../../styles'
 
 const ProfileBackground = styled.View`
   background-color: ${bgGray};
@@ -42,7 +43,7 @@ export class Tasks extends React.PureComponent<props> {
         <Header
           centerComponent={ {
             text: 'ユーザー',
-            style: { color: textWhite },
+            style: headerTitleStyle,
           } }
         />
         <Username />

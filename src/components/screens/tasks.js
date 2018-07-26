@@ -22,6 +22,8 @@ import { textWhite } from '../../colors'
 // libs
 import { createActions as createTaskActions } from '../../reducers/task'
 import demoTasks from '../../../assets/demo-tasks'
+import { headerTitleStyle } from '../../styles'
+import { textGray } from '../../colors'
 
 type Props = {
   tasks: Task[],
@@ -125,9 +127,16 @@ export class Tasks extends React.PureComponent<Props, State> {
     return (
       <View>
         <Header
+          leftComponent={
+            <Ionicons
+              name={ 'ios-add' }
+              size={ 26 }
+              style={ { color: 'transparent', padding: 20 } }
+            />
+          }
           centerComponent={ {
             text: 'お仕事',
-            style: { color: textWhite },
+            style: headerTitleStyle,
           } }
           rightComponent={
             <Ionicons
@@ -165,7 +174,11 @@ export class Tasks extends React.PureComponent<Props, State> {
               />
             </View>
             <Button title={ '追加' } onPress={ this.onRegisterClick } />
-            <Button title={ 'キャンセル' } onPress={ this.onCancelClick } />
+            <Button
+              title={ 'キャンセル' }
+              onPress={ this.onCancelClick }
+              color={ textGray }
+            />
           </View>
         </Modal>
       </View>

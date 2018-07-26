@@ -91,7 +91,11 @@ export const TaskRow = (props: Props) => {
         <View>
           <OuterRow>
             <Ionicons
-              name={ 'ios-checkmark-circle-outline' }
+              name={
+                task.done
+                  ? 'ios-checkmark-circle'
+                  : 'ios-checkmark-circle-outline'
+              }
               size={ 26 }
               style={ {
                 color: task.done ? textGreen : textPaleGray,
