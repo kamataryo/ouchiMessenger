@@ -28,6 +28,7 @@ type Props = {
   updateTasks: (tasks: Task[]) => void,
   toggleTask: (index: number) => void,
   addTask: (task: Task) => void,
+  deleteTask: (index: number) => void,
 }
 
 type State = {
@@ -71,11 +72,11 @@ export class Tasks extends React.PureComponent<Props, State> {
   }
 
   renderItem = ({ item, index }: RenderItemProps) => (
-    <TouchableOpacity
-      onPress={ () => console.log(this.props) || this.props.toggleTask(index) }
-    >
-      <TaskRow task={ item } />
-    </TouchableOpacity>
+    <TaskRow
+      task={ item }
+      toggleTask={ () => this.props.toggleTask(index) }
+      deleteTask={ () => this.props.deleteTask(index) }
+    />
   )
 
   toggleModal = () =>
@@ -166,6 +167,7 @@ export const mapDispatchToProps = (dispatch: any) => ({
     dispatch(createTaskActions.updateTasks(tasks)),
   toggleTask: (index: number) => dispatch(createTaskActions.toggleTask(index)),
   addTask: (task: Task) => dispatch(createTaskActions.addTask(task)),
+  deleteTask: (index: number) => dispatch(createTaskActions.deleteTask(index)),
 })
 
 export default connect(

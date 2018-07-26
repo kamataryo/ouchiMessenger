@@ -2,17 +2,18 @@
 
 import React from 'react'
 
-import { View } from 'react-native'
-import Swipeout from 'react-native-swipeout'
+import { View, Text, TouchableHighlight, TouchableOpacity } from 'react-native'
+import Swipeable from 'react-native-swipeable'
 import styled from 'styled-components'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import type { Task } from '../../types/task'
-import { bgGray, textGreen, textGray, textPaleGray } from '../../colors'
-const swipeoutButtons = [{ text: 'お願い！' }, { text: '削除' }]
+import { textGreen, textGray, textPaleGray } from '../../colors'
 
 type Props = {
   task: Task,
+  toggleTask: () => void,
+  deleteTask: () => void,
 }
 
 const OuterRow = styled.View`
@@ -41,26 +42,39 @@ const Description = styled.Text`
   margin: 2px;
 `
 
-export const TaskRow = ({ task }: Props) => {
+export const TaskRow = (props: Props) => {
+  const { task, toggleTask, deleteTask } = props
+
+  const rightButtons = [
+    <TouchableHighlight key={ '1' }>
+      <Text>{'お願い！'}</Text>
+    </TouchableHighlight>,
+    <TouchableHighlight key={ '2' } onPress={ deleteTask }>
+      <Text>{'削除'}</Text>
+    </TouchableHighlight>,
+  ]
+
   return (
-    <Swipeout
-      right={ task.done ? void 0 : swipeoutButtons }
-      backgroundColor={ bgGray }
-    >
-      <View>
-        <OuterRow>
-          <Ionicons
-            name={ 'ios-checkmark-circle-outline' }
-            size={ 26 }
-            style={ { color: task.done ? textGreen : textPaleGray, padding: 15 } }
-          />
-          <InnerRow>
-            <Title>{task.title}</Title>
-            <Description>{task.description}</Description>
-          </InnerRow>
-        </OuterRow>
-      </View>
-    </Swipeout>
+    <Swipeable rightButtons={ rightButtons }>
+      <TouchableOpacity onPress={ toggleTask }>
+        <View>
+          <OuterRow>
+            <Ionicons
+              name={ 'ios-checkmark-circle-outline' }
+              size={ 26 }
+              style={ {
+                color: task.done ? textGreen : textPaleGray,
+                padding: 15,
+              } }
+            />
+            <InnerRow>
+              <Title>{task.title}</Title>
+              <Description>{task.description}</Description>
+            </InnerRow>
+          </OuterRow>
+        </View>
+      </TouchableOpacity>
+    </Swipeable>
   )
 }
 
