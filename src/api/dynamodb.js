@@ -12,27 +12,23 @@ const client = new AWS.DynamoDB.DocumentClient({ region })
 export const get = () =>
   new Promise((resolve, reject) => {
     const params = { TableName }
-    client.scan(params, (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(data.Items)
-      }
-    })
+    client.scan(
+      params,
+      (err, data) => (err ? reject(err) : resolve(data.Items)),
+    )
   })
 
 export const put = task =>
   new Promise((resolve, reject) => {
-    const params = {
-      TableName,
-      Item: task,
-    }
+    const params = { TableName, Item: task }
+    client.put(params, (err, data) => (err ? reject(err) : resolve(data.Items)))
+  })
 
-    client.put(params, (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(data)
-      }
-    })
+export const remove = taskId =>
+  new Promise((resolve, reject) => {
+    const params = { TableName, Key: { taskId } }
+    client.delete(
+      params,
+      (err, data) => (err ? reject(err) : resolve(data.Items)),
+    )
   })

@@ -26,7 +26,11 @@ import { textGray } from '../../colors'
 import moment from 'moment'
 
 // APIs
-import { put as dynamoPut, get as dynamoGet } from '../../api/dynamodb'
+import {
+  put as dynamoPut,
+  get as dynamoGet,
+  remove as dynamoRemove,
+} from '../../api/dynamodb'
 
 type Props = {
   username: string,
@@ -84,18 +88,29 @@ export class Tasks extends React.PureComponent<Props, State> {
   renderItem = ({ item, index }: any) => (
     <TaskRow
       task={ item }
-      toggleTask={ () => {
-        const updatedAt = moment(Date()).format('hh:mm')
-        const updatedBy = this.props.username
-        this.props.toggleTask(index, updatedAt, updatedBy)
-        const task = this.props.tasks[index]
-        dynamoPut({ ...task, updatedAt, updatedBy, done: !task.done }).catch(
-          () => Alert.alert('通信エラー', 'ごめんだにゃん 😹'),
-        )
-      } }
-      deleteTask={ () => this.props.deleteTask(index) }
+      toggleTask={ this.itemProps.toggleTask(item, index) }
+      deleteTask={ this.itemProps.deleteTask(item, index) }
     />
   )
+
+  itemProps = {
+    toggleTask: (task, index) => () => {
+      const updatedAt = moment(Date()).format('hh:mm')
+      const updatedBy = this.props.username
+      this.props.toggleTask(index, updatedAt, updatedBy)
+      dynamoPut({ ...task, updatedAt, updatedBy, done: !task.done }).catch(() =>
+        Alert.alert('通信エラー', 'ごめんだにゃん 😹'),
+      )
+    },
+
+    deleteTask: (task, index) => () => {
+      const { taskId } = task
+      dynamoRemove(taskId).catch(() =>
+        Alert.alert('通信エラー', 'ごめんだにゃん 😹'),
+      )
+      this.props.deleteTask(index)
+    },
+  }
 
   toggleModal = () =>
     this.setState({ ...this.state, isModalOpen: !this.state.isModalOpen })
