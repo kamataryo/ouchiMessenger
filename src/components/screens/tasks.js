@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 // components
-import { View, Button } from 'react-native'
+import { View, Button, RefreshControl } from 'react-native'
 import { Header, FormLabel, FormInput } from 'react-native-elements'
 
 import TaskRow from '../commons/task-row'
@@ -34,6 +34,7 @@ type Props = {
 type State = {
   isModalOpen: boolean,
   editingTask: any,
+  refreshing: boolean,
 }
 
 const FlatList = styled.FlatList`
@@ -59,12 +60,27 @@ export class Tasks extends React.PureComponent<Props, State> {
    */
   constructor(props: Props) {
     super(props)
-    this.state = { isModalOpen: false, editingTask: {} }
+    this.state = { isModalOpen: false, editingTask: {}, refreshing: false }
     // set demodata
     // TODO: remove this
     props.tasks.length === 0 &&
       setTimeout(() => this.props.updateTasks(demoTasks), 1000)
   }
+
+  onRefresh = () => {
+    this.setState({ ...this.state, refreshing: true })
+    this.fetchData().then(() => {
+      this.setState({ ...this.state, refreshing: false })
+    })
+  }
+
+  fetchData = () =>
+    new Promise(resolve => {
+      setTimeout(() => {
+        this.props.updateTasks(demoTasks)
+        resolve()
+      }, 1000)
+    })
 
   renderItem = ({ item, index }: any) => (
     <TaskRow
@@ -103,7 +119,7 @@ export class Tasks extends React.PureComponent<Props, State> {
    * @return {ReactElement|null|false} render a React element.
    */
   render() {
-    const { isModalOpen, editingTask } = this.state
+    const { isModalOpen, editingTask, refreshing } = this.state
     const { tasks } = this.props
 
     return (
@@ -122,7 +138,16 @@ export class Tasks extends React.PureComponent<Props, State> {
             />
           }
         />
-        <FlatList data={ tasks } renderItem={ this.renderItem } />
+        <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={ refreshing }
+              onRefresh={ this.onRefresh }
+            />
+          }
+          data={ tasks }
+          renderItem={ this.renderItem }
+        />
         <Modal isVisible={ isModalOpen }>
           <View>
             <View>
