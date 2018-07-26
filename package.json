@@ -5,26 +5,25 @@
   "devDependencies": {
     "babel-eslint": "^8.2.6",
     "babel-preset-flow": "^6.23.0",
+    "babel-preset-react-native-stage-0": "^1.0.1",
     "eslint": "^5.2.0",
     "eslint-plugin-flowtype": "^2.50.0",
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-react": "^7.10.0",
     "flow-bin": "^0.77.0",
     "flow-typed": "^2.5.1",
-    "jest-expo": "~27.0.0",
+    "jest": "^23.4.1",
+    "jest-react-native": "^18.0.0",
     "prettier": "^1.13.7",
     "prettier-eslint": "^8.8.2",
     "prettier-eslint-cli": "^4.7.1",
-    "react-native-scripts": "1.14.0",
     "react-test-renderer": "16.3.1"
   },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "scripts": {
     "install": "flow-typed install",
-    "start": "react-native-scripts start",
-    "eject": "react-native-scripts eject",
-    "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios",
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
     "test": "jest",
     "lint": "eslint --cache --ext=js .",
     "lint:prettier": "prettier-eslint \"./**/*.js\" --write",
@@ -32,10 +31,9 @@
     "flow-stop": "flow stop"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "react-native"
   },
   "dependencies": {
-    "expo": "^27.0.1",
     "immutability-helper": "^2.7.1",
     "moment": "^2.22.2",
     "react": "16.3.1",
