@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 // components
-import { View, Button, RefreshControl } from 'react-native'
+import { View, Button, RefreshControl, Alert } from 'react-native'
 import { Header, FormLabel, FormInput } from 'react-native-elements'
 
 import TaskRow from '../commons/task-row'
@@ -21,10 +21,12 @@ import { textWhite } from '../../colors'
 
 // libs
 import { createActions as createTaskActions } from '../../reducers/task'
-import demoTasks from '../../../assets/demo-tasks'
 import { headerTitleStyle } from '../../styles'
 import { textGray } from '../../colors'
 import moment from 'moment'
+
+// APIs
+import { put as dynamoPut, get as dynamoGet } from '../../api/dynamodb'
 
 type Props = {
   username: string,
@@ -33,6 +35,7 @@ type Props = {
   toggleTask: (index: number, updatedAt: string, updatedBy: string) => void,
   addTask: (task: Task) => void,
   deleteTask: (index: number) => void,
+  clearTasks: () => void,
 }
 
 type State = {
@@ -65,37 +68,31 @@ export class Tasks extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = { isModalOpen: false, editingTask: {}, refreshing: false }
-    // set demodata
-    // TODO: remove this
-    props.tasks.length === 0 &&
-      setTimeout(() => this.props.updateTasks(demoTasks), 1000)
   }
 
   onRefresh = () => {
     this.setState({ ...this.state, refreshing: true })
-    this.fetchData().then(() => {
-      this.setState({ ...this.state, refreshing: false })
-    })
-  }
 
-  fetchData = () =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        this.props.updateTasks(demoTasks)
-        resolve()
-      }, 1000)
-    })
+    dynamoGet()
+      .then(tasks => {
+        this.props.updateTasks(tasks)
+        this.setState({ ...this.state, refreshing: false })
+      })
+      .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
+  }
 
   renderItem = ({ item, index }: any) => (
     <TaskRow
       task={ item }
-      toggleTask={ () =>
-        this.props.toggleTask(
-          index,
-          moment(Date()).format('hh:mm'),
-          this.props.username,
+      toggleTask={ () => {
+        const updatedAt = moment(Date()).format('hh:mm')
+        const updatedBy = this.props.username
+        this.props.toggleTask(index, updatedAt, updatedBy)
+        const task = this.props.tasks[index]
+        dynamoPut({ ...task, updatedAt, updatedBy, done: !task.done }).catch(
+          () => Alert.alert('通信エラー', 'ごめんだにゃん 😹'),
         )
-      }
+      } }
       deleteTask={ () => this.props.deleteTask(index) }
     />
   )
@@ -112,11 +109,24 @@ export class Tasks extends React.PureComponent<Props, State> {
   resetEditingTask = () => this.setState({ ...this.state, editingTask: {} })
 
   onRegisterClick = () => {
-    // TODO serialize and obtain id
-    const nextTask = { ...this.state.editingTask, id: Date() }
-    this.props.addTask(nextTask)
-    this.resetEditingTask()
-    this.toggleModal()
+    const nextTask = {
+      ...this.state.editingTask,
+      taskId: moment().unix() + '_' + this.props.username,
+      done: false,
+      updatedAt: Date(),
+      updatedBy: this.props.username,
+    }
+
+    dynamoPut(nextTask)
+      .then(() => {
+        this.props.addTask(nextTask)
+        this.resetEditingTask()
+        this.toggleModal()
+      })
+      .catch(
+        err =>
+          console.error(err) || Alert.alert('通信エラー', 'ごめんだにゃん 😹'),
+      )
   }
 
   onCancelClick = () => {
@@ -199,7 +209,7 @@ export const mapStateToProps = (state: any) => {
     username: state.profile.username,
     tasks: state.task.data.map(task => ({
       ...task,
-      key: (task.id || '').toString(),
+      key: task.taskId.toString(),
     })),
   }
 }
@@ -211,6 +221,7 @@ export const mapDispatchToProps = (dispatch: any) => ({
     dispatch(createTaskActions.toggleTask(index, updatedAt, updatedBy)),
   addTask: (task: Task) => dispatch(createTaskActions.addTask(task)),
   deleteTask: (index: number) => dispatch(createTaskActions.deleteTask(index)),
+  clearTasks: () => dispatch(createTaskActions.clearTasks()),
 })
 
 export default connect(

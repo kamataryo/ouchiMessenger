@@ -11,6 +11,7 @@ const UPDATE_TASKS = 'TASKS.UPDATE_TASKS'
 const TOGGLE_TASK = 'TASKS.TOGGLE_TASK'
 const ADD_TASK = 'TASKS.ADD_TASK'
 const DELETE_TASK = 'TASKS.DELETE_TASK'
+const CLEAR_TASKS = 'TASKS.CLEAR_TASKS'
 
 type UpdateTasksAction = {
   type: typeof UPDATE_TASKS,
@@ -32,6 +33,11 @@ type DeleteTaskAction = {
   payload: { index: number },
 }
 
+type ClearTasksAction = {
+  type: typeof CLEAR_TASKS,
+  payload: {},
+}
+
 export const initialState: TaskState = {
   data: [],
 }
@@ -41,6 +47,7 @@ type TaskActions =
   | ToggleTaskAction
   | AddTaskAction
   | DeleteTaskAction
+  | ClearTasksAction
 
 export const createActions = {
   updateTasks: (tasks: Task[]): UpdateTasksAction => ({
@@ -62,6 +69,10 @@ export const createActions = {
   deleteTask: (index: number): DeleteTaskAction => ({
     type: DELETE_TASK,
     payload: { index },
+  }),
+  clearTasks: (): ClearTasksAction => ({
+    type: CLEAR_TASKS,
+    payload: {},
   }),
 }
 
@@ -97,6 +108,12 @@ export const reducer = (
     return update(state, {
       data: {
         $splice: [[index, 1]],
+      },
+    })
+  } else if (action.type === CLEAR_TASKS) {
+    return update(state, {
+      data: {
+        $set: [],
       },
     })
   } else {

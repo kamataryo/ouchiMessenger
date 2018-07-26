@@ -1,27 +1,27 @@
 export default [
   {
-    id: 1,
+    taskId: 1,
     title: 'すももの朝ごはん',
     description: 'カリカリ 10g',
     category: 'cat',
     done: true,
   },
   {
-    id: 2,
+    taskId: 2,
     title: 'こももの朝ごはん',
     description: 'カリカリ 10g',
     category: 'cat',
     done: true,
   },
   {
-    id: 3,
+    taskId: 3,
     title: 'ネコトイレの掃除',
     description: '排便状態観察',
     category: 'cat',
     done: false,
   },
   {
-    id: 4,
+    taskId: 4,
     title: '食器洗濯機を回す',
     description: '',
     category: 'kitchen',

@@ -1,7 +1,7 @@
 // @flow
 
 export type Task = {
-  id: number,
+  taskId: string,
   title: string,
   description: string,
   category: ?string,
