@@ -63,16 +63,16 @@ export const TaskRow = (props: Props) => {
   const { task, toggleTask, deleteTask } = props
 
   const rightButtons = [
-    <SwipedButton key={ '1' } color={ 'red' }>
-      <SwipeButtonInnerView>
-        <Ionicons
-          name={ 'ios-notifications' }
-          size={ 20 }
-          style={ { color: 'white', padding: 2 } }
-        />
-        <SwipeButtonInnerText>{'お願い！'}</SwipeButtonInnerText>
-      </SwipeButtonInnerView>
-    </SwipedButton>,
+    // <SwipedButton key={ '1' } color={ 'red' }>
+    //   <SwipeButtonInnerView>
+    //     <Ionicons
+    //       name={ 'ios-notifications' }
+    //       size={ 20 }
+    //       style={ { color: 'white', padding: 2 } }
+    //     />
+    //     <SwipeButtonInnerText>{'お願い！'}</SwipeButtonInnerText>
+    //   </SwipeButtonInnerView>
+    // </SwipedButton>,
     <SwipedButton key={ '2' } color={ 'red' } onPress={ deleteTask }>
       <SwipeButtonInnerView>
         <Ionicons

@@ -115,10 +115,10 @@ export class Tasks extends React.PureComponent<Props, State> {
   toggleModal = () =>
     this.setState({ ...this.state, isModalOpen: !this.state.isModalOpen })
 
-  updateEditingTask = (key: string) => (value: any) =>
+  updateEditingTask = (key: string) => (e: any) =>
     this.setState({
       ...this.state,
-      editingTask: { ...this.state.editingTask, [key]: value },
+      editingTask: { ...this.state.editingTask, [key]: e.nativeEvent.text },
     })
 
   resetEditingTask = () => this.setState({ ...this.state, editingTask: {} })
@@ -196,14 +196,14 @@ export class Tasks extends React.PureComponent<Props, State> {
               <FormLabel>{'タイトル'}</FormLabel>
               <FormInput
                 value={ editingTask.title }
-                onChangeText={ this.updateEditingTask('title') }
+                onTextInput={ this.updateEditingTask('title') }
               />
             </View>
             <View>
               <FormLabel>{'概要'}</FormLabel>
               <FormInput
                 value={ editingTask.description }
-                onChangeText={ this.updateEditingTask('description') }
+                onTextInput={ this.updateEditingTask('description') }
               />
             </View>
             <Button title={ '追加' } onPress={ this.onRegisterClick } />
@@ -220,9 +220,10 @@ export class Tasks extends React.PureComponent<Props, State> {
 }
 
 export const mapStateToProps = (state: any) => {
+  const tasks = Array.isArray(state.task.data) ? state.task.data : []
   return {
     username: state.profile.username,
-    tasks: state.task.data.map(task => ({
+    tasks: tasks.map(task => ({
       ...task,
       key: task.taskId.toString(),
     })),

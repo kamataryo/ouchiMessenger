@@ -35,7 +35,10 @@ export class Username extends React.Component<Props> {
     return (
       <View>
         <FormLabel>{'お名前'}</FormLabel>
-        <FormInput value={ username } onChangeText={ update } />
+        <FormInput
+          value={ username }
+          onTextInput={ e => update(e.nativeEvent.text) }
+        />
       </View>
     )
   }
