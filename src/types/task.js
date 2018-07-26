@@ -5,7 +5,7 @@ export type Task = {
   title: string,
   description: string,
   category: ?string,
-  createdAt: ?string,
-  createdBy: ?string,
+  updatedAt: ?string,
+  updatedBy: ?string,
   done: boolean,
 }

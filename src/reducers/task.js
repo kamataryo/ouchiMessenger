@@ -19,7 +19,7 @@ type UpdateTasksAction = {
 
 type ToggleTaskAction = {
   type: typeof TOGGLE_TASK,
-  payload: { index: number },
+  payload: { index: number, updatedAt: string, updatedBy: string },
 }
 
 type AddTaskAction = {
@@ -47,9 +47,13 @@ export const createActions = {
     type: UPDATE_TASKS,
     payload: { tasks },
   }),
-  toggleTask: (index: number): ToggleTaskAction => ({
+  toggleTask: (
+    index: number,
+    updatedAt: string,
+    updatedBy: string,
+  ): ToggleTaskAction => ({
     type: TOGGLE_TASK,
-    payload: { index },
+    payload: { index, updatedAt, updatedBy },
   }),
   addTask: (task: Task): AddTaskAction => ({
     type: ADD_TASK,
@@ -72,11 +76,13 @@ export const reducer = (
     })
   } else if (action.type === TOGGLE_TASK) {
     const toggleTaskAction: ToggleTaskAction = action
-    const index = toggleTaskAction.payload.index
+    const { index, updatedBy, updatedAt } = toggleTaskAction.payload
     return update(state, {
       data: {
         [index]: {
           done: { $set: !state.data[index].done },
+          updatedBy: { $set: updatedBy },
+          updatedAt: { $set: updatedAt },
         },
       },
     })

@@ -24,11 +24,13 @@ import { createActions as createTaskActions } from '../../reducers/task'
 import demoTasks from '../../../assets/demo-tasks'
 import { headerTitleStyle } from '../../styles'
 import { textGray } from '../../colors'
+import moment from 'moment'
 
 type Props = {
+  username: string,
   tasks: Task[],
   updateTasks: (tasks: Task[]) => void,
-  toggleTask: (index: number) => void,
+  toggleTask: (index: number, updatedAt: string, updatedBy: string) => void,
   addTask: (task: Task) => void,
   deleteTask: (index: number) => void,
 }
@@ -87,7 +89,13 @@ export class Tasks extends React.PureComponent<Props, State> {
   renderItem = ({ item, index }: any) => (
     <TaskRow
       task={ item }
-      toggleTask={ () => this.props.toggleTask(index) }
+      toggleTask={ () =>
+        this.props.toggleTask(
+          index,
+          moment(Date()).format('hh:mm'),
+          this.props.username,
+        )
+      }
       deleteTask={ () => this.props.deleteTask(index) }
     />
   )
@@ -188,6 +196,7 @@ export class Tasks extends React.PureComponent<Props, State> {
 
 export const mapStateToProps = (state: any) => {
   return {
+    username: state.profile.username,
     tasks: state.task.data.map(task => ({
       ...task,
       key: (task.id || '').toString(),
@@ -198,7 +207,8 @@ export const mapStateToProps = (state: any) => {
 export const mapDispatchToProps = (dispatch: any) => ({
   updateTasks: (tasks: Task[]) =>
     dispatch(createTaskActions.updateTasks(tasks)),
-  toggleTask: (index: number) => dispatch(createTaskActions.toggleTask(index)),
+  toggleTask: (index: number, updatedAt: string, updatedBy: string) =>
+    dispatch(createTaskActions.toggleTask(index, updatedAt, updatedBy)),
   addTask: (task: Task) => dispatch(createTaskActions.addTask(task)),
   deleteTask: (index: number) => dispatch(createTaskActions.deleteTask(index)),
 })

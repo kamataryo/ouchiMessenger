@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { View, TouchableOpacity } from 'react-native'
+import { Text, View, TouchableOpacity } from 'react-native'
 import Swipeable from 'react-native-swipeable'
 import styled from 'styled-components'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -104,7 +104,13 @@ export const TaskRow = (props: Props) => {
             />
             <InnerRow>
               <Title>{task.title}</Title>
-              <Description>{task.description}</Description>
+              {task.done ? (
+                <Description>
+                  {`${task.updatedBy || '(不明)'} さん ${task.updatedAt || ''}`}
+                </Description>
+              ) : (
+                <Description>{task.description}</Description>
+              )}
             </InnerRow>
           </OuterRow>
         </View>
