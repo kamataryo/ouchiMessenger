@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { Text, View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import Swipeable from 'react-native-swipeable'
 import styled from 'styled-components'
 import Ionicons from 'react-native-vector-icons/Ionicons'
