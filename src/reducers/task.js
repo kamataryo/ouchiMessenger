@@ -2,7 +2,7 @@
 
 // types
 import type { Task } from '../types/task'
-type TaskState = { data: Task[] }
+export type TaskState = { data: Task[] }
 
 // libs
 import update from 'immutability-helper'

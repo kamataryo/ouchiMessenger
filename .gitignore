@@ -9,7 +9,7 @@
 .env.test.local
 .env.production.local
 
-### https://raw.github.com/github/gitignore/68ae2ff9f7ce0176696966539b9807525002893b/Node.gitignore
+# https://raw.github.com/github/gitignore/68ae2ff9f7ce0176696966539b9807525002893b/Node.gitignore
 
 # Logs
 logs
@@ -81,3 +81,6 @@ flow-typed/
 
 # Mac
 .DS_Store
+
+# XCode
+UserInterfaceState.xcuserstate

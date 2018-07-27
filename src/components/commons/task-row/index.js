@@ -4,62 +4,29 @@ import React from 'react'
 
 import { View, TouchableOpacity } from 'react-native'
 import Swipeable from 'react-native-swipeable'
-import styled from 'styled-components'
+
+// components
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import {
+  OuterRow,
+  InnerRow,
+  Title,
+  Description,
+  SwipedButton,
+  SwipeButtonInnerView,
+  SwipeButtonInnerText,
+} from './styled'
 
-import type { Task } from '../../types/task'
-import { textGreen, textGray, textPaleGray } from '../../colors'
+import type { Task } from '../../../types/task'
+import { textGreen, textPaleGray } from '../../../colors'
 
-type Props = {
+type OwnProps = {
   task: Task,
   toggleTask: () => void,
   deleteTask: () => void,
 }
 
-const OuterRow = styled.View`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 55px;
-  border-bottom-width: 0.5;
-  border-bottom-color: #d6d7da;
-`
-
-const InnerRow = styled.View`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`
-
-const Title = styled.Text`
-  font-size: 16px;
-  color: ${textGray};
-  margin: 2px;
-`
-
-const Description = styled.Text`
-  font-size: 12px;
-  margin: 2px;
-`
-
-const SwipedButton = styled.TouchableHighlight`
-  height: 100%;
-  background-color: ${props => props.color};
-  padding: 0 10px;
-`
-
-const SwipeButtonInnerView = styled.View`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`
-
-const SwipeButtonInnerText = styled.Text`
-  color: white;
-  font-size: 16px;
-`
-
-export const TaskRow = (props: Props) => {
+export const TaskRow = (props: OwnProps) => {
   const { task, toggleTask, deleteTask } = props
 
   const rightButtons = [
@@ -73,6 +40,13 @@ export const TaskRow = (props: Props) => {
     //     <SwipeButtonInnerText>{'お願い！'}</SwipeButtonInnerText>
     //   </SwipeButtonInnerView>
     // </SwipedButton>,
+
+    // <SwipedButton key={ 'l-1' } color={ bgGreen }>
+    //   <SwipeButtonInnerView>
+    //     <SwipeButtonInnerText>{'🤔'}</SwipeButtonInnerText>
+    //   </SwipeButtonInnerView>
+    // </SwipedButton>,
+
     <SwipedButton key={ '2' } color={ 'red' } onPress={ deleteTask }>
       <SwipeButtonInnerView>
         <Ionicons

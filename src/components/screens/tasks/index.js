@@ -1,28 +1,26 @@
 // @flow
 
 // types
-import type { Task } from '../../types/task'
+import type { Task } from '../../../types/task'
+import type { Props, State } from './types'
+import type { StoreState } from '../../../types/store'
+import type { Dispatch } from 'redux'
 
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 // components
-import { View, Button, RefreshControl, Alert } from 'react-native'
-import { Header, FormLabel, FormInput } from 'react-native-elements'
-
-import TaskRow from '../commons/task-row'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import Modal from 'react-native-modal'
+import { View, RefreshControl, Alert } from 'react-native'
+import TaskHeader from './partials/task-header'
+import TaskRow from '../../commons/task-row'
+import TaskModal from './partials/task-modal'
 
 // hocs
-import tabBarIconHOC from '../../hocs/tab-bar-icon'
-import { textWhite } from '../../colors'
+import tabBarIconHOC from '../../../hocs/tab-bar-icon'
 
 // libs
-import { createActions as createTaskActions } from '../../reducers/task'
-import { headerTitleStyle } from '../../styles'
-import { textGray } from '../../colors'
+import { createActions as createTaskActions } from '../../../reducers/task'
 import moment from 'moment'
 
 // APIs
@@ -30,23 +28,7 @@ import {
   put as dynamoPut,
   get as dynamoGet,
   remove as dynamoRemove,
-} from '../../api/dynamodb'
-
-type Props = {
-  username: string,
-  tasks: Task[],
-  updateTasks: (tasks: Task[]) => void,
-  toggleTask: (index: number, updatedAt: string, updatedBy: string) => void,
-  addTask: (task: Task) => void,
-  deleteTask: (index: number) => void,
-  clearTasks: () => void,
-}
-
-type State = {
-  isModalOpen: boolean,
-  editingTask: any,
-  refreshing: boolean,
-}
+} from '../../../api/dynamodb'
 
 const FlatList = styled.FlatList`
   height: 100%;
@@ -94,7 +76,7 @@ export class Tasks extends React.PureComponent<Props, State> {
   )
 
   itemProps = {
-    toggleTask: (task, index) => () => {
+    toggleTask: (task: Task, index: number) => () => {
       const updatedAt = moment(Date()).format('HH:mm')
       const updatedBy = this.props.username
       this.props.toggleTask(index, updatedAt, updatedBy)
@@ -103,7 +85,7 @@ export class Tasks extends React.PureComponent<Props, State> {
       )
     },
 
-    deleteTask: (task, index) => () => {
+    deleteTask: (task: Task, index: number) => () => {
       const { taskId } = task
       dynamoRemove(taskId).catch(() =>
         Alert.alert('通信エラー', 'ごめんだにゃん 😹'),
@@ -138,10 +120,7 @@ export class Tasks extends React.PureComponent<Props, State> {
         this.resetEditingTask()
         this.toggleModal()
       })
-      .catch(
-        err =>
-          console.error(err) || Alert.alert('通信エラー', 'ごめんだにゃん 😹'),
-      )
+      .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
   }
 
   onCancelClick = () => {
@@ -159,27 +138,7 @@ export class Tasks extends React.PureComponent<Props, State> {
 
     return (
       <View style={ { paddingBottom: 67 } }>
-        <Header
-          leftComponent={
-            <Ionicons
-              name={ 'ios-add' }
-              size={ 26 }
-              style={ { color: 'transparent', padding: 20 } }
-            />
-          }
-          centerComponent={ {
-            text: 'お仕事',
-            style: headerTitleStyle,
-          } }
-          rightComponent={
-            <Ionicons
-              name={ 'ios-add' }
-              size={ 26 }
-              style={ { color: textWhite, padding: 20 } }
-              onPress={ this.toggleModal }
-            />
-          }
-        />
+        <TaskHeader toggleModal={ this.toggleModal } />
         <FlatList
           refreshControl={
             <RefreshControl
@@ -187,50 +146,31 @@ export class Tasks extends React.PureComponent<Props, State> {
               onRefresh={ this.onRefresh }
             />
           }
-          data={ tasks }
+          data={ tasks.map(task => ({ ...task, key: task.taskId.toString() })) }
           renderItem={ this.renderItem }
         />
-        <Modal isVisible={ isModalOpen }>
-          <View>
-            <View>
-              <FormLabel>{'タイトル'}</FormLabel>
-              <FormInput
-                value={ editingTask.title }
-                onTextInput={ this.updateEditingTask('title') }
-              />
-            </View>
-            <View>
-              <FormLabel>{'概要'}</FormLabel>
-              <FormInput
-                value={ editingTask.description }
-                onTextInput={ this.updateEditingTask('description') }
-              />
-            </View>
-            <Button title={ '追加' } onPress={ this.onRegisterClick } />
-            <Button
-              title={ 'キャンセル' }
-              onPress={ this.onCancelClick }
-              color={ textGray }
-            />
-          </View>
-        </Modal>
+        <TaskModal
+          task={ editingTask }
+          isOpen={ isModalOpen }
+          onEditTitle={ this.updateEditingTask('title') }
+          onEditDescription={ this.updateEditingTask('description') }
+          onRegisterClick={ this.onRegisterClick }
+          onCancelClick={ this.onCancelClick }
+        />
       </View>
     )
   }
 }
 
-export const mapStateToProps = (state: any) => {
+export const mapStateToProps = (state: StoreState) => {
   const tasks = Array.isArray(state.task.data) ? state.task.data : []
   return {
     username: state.profile.username,
-    tasks: tasks.map(task => ({
-      ...task,
-      key: task.taskId.toString(),
-    })),
+    tasks: tasks,
   }
 }
 
-export const mapDispatchToProps = (dispatch: any) => ({
+export const mapDispatchToProps = (dispatch: Dispatch<{ type: string }>) => ({
   updateTasks: (tasks: Task[]) =>
     dispatch(createTaskActions.updateTasks(tasks)),
   toggleTask: (index: number, updatedAt: string, updatedBy: string) =>

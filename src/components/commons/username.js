@@ -8,11 +8,20 @@ import { FormLabel, FormInput } from 'react-native-elements'
 // action creators
 import { createActions as createProfileActions } from '../../reducers/profile'
 
-type Props = {
-  // stateProps
+type OwnProps = {}
+
+type StateProps = {
   username: string,
-  // dispatchProps
+}
+
+type DispatchProps = {
   update: (username: string) => void,
+}
+
+type Props = {
+  ...$Exact<OwnProps>,
+  ...$Exact<StateProps>,
+  ...$Exact<DispatchProps>,
 }
 
 export class Username extends React.Component<Props> {
@@ -26,19 +35,18 @@ export class Username extends React.Component<Props> {
     return this.props.username !== nextProps.username
   }
 
+  onTextInput = (e: any) => this.props.update(e.nativeEvent.text)
+
   /**
    * render
    * @return {ReactElement|null|false} render a React element.
    */
   render() {
-    const { username, update } = this.props
+    const { username } = this.props
     return (
       <View>
         <FormLabel>{'お名前'}</FormLabel>
-        <FormInput
-          value={ username }
-          onTextInput={ e => update(e.nativeEvent.text) }
-        />
+        <FormInput value={ username } onTextInput={ this.onTextInput } />
       </View>
     )
   }
