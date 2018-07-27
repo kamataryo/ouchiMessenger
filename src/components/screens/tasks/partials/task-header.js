@@ -11,11 +11,7 @@ export type Props = { toggleModal: () => void }
 export const TaskHeader = (props: Props) => (
   <Header
     leftComponent={
-      <Ionicons
-        name={ 'ios-add' }
-        size={ 26 }
-        style={ { color: 'transparent', padding: 20 } }
-      />
+      <Ionicons name={ 'ios-add' } size={ 26 } style={ { color: 'transparent' } } />
     }
     centerComponent={ {
       text: 'お仕事',
@@ -25,7 +21,7 @@ export const TaskHeader = (props: Props) => (
       <Ionicons
         name={ 'ios-add' }
         size={ 26 }
-        style={ { color: textWhite, padding: 20 } }
+        style={ { color: textWhite } }
         onPress={ props.toggleModal }
       />
     }
