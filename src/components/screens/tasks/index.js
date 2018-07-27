@@ -34,7 +34,7 @@ const FlatList = styled.FlatList`
   height: 100%;
 `
 
-export class Tasks extends React.PureComponent<Props, State> {
+export class Tasks extends React.Component<Props, State> {
   /**
    * [navigationOptions description]
    * @type {{navigation: function}} args navigation args
@@ -55,6 +55,8 @@ export class Tasks extends React.PureComponent<Props, State> {
     super(props)
     this.state = { isModalOpen: false, editingTask: {}, refreshing: false }
   }
+
+  shouldComponentUpdate = () => true
 
   onRefresh = () => {
     this.setState({ ...this.state, refreshing: true })
@@ -97,10 +99,10 @@ export class Tasks extends React.PureComponent<Props, State> {
   toggleModal = () =>
     this.setState({ ...this.state, isModalOpen: !this.state.isModalOpen })
 
-  updateEditingTask = (key: string) => (e: any) =>
+  updateEditingTask = (key: string) => (value: string) =>
     this.setState({
       ...this.state,
-      editingTask: { ...this.state.editingTask, [key]: e.nativeEvent.text },
+      editingTask: { ...this.state.editingTask, [key]: value },
     })
 
   resetEditingTask = () => this.setState({ ...this.state, editingTask: {} })
@@ -152,8 +154,8 @@ export class Tasks extends React.PureComponent<Props, State> {
         <TaskModal
           task={ editingTask }
           isOpen={ isModalOpen }
-          onEditTitle={ this.updateEditingTask('title') }
-          onEditDescription={ this.updateEditingTask('description') }
+          onTitleChange={ this.updateEditingTask('title') }
+          onDescriptionChange={ this.updateEditingTask('description') }
           onRegisterClick={ this.onRegisterClick }
           onCancelClick={ this.onCancelClick }
         />
