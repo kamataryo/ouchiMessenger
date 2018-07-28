@@ -52,10 +52,11 @@ export class Tasks extends React.PureComponent<Props, State> {
   }
 
   batch = () =>
-    Alert.alert('繰越処理', '日付の繰越処理を行います。よろしいですか？', [
-      { text: 'OK', onPress: batch },
-      { text: 'キャンセル' },
-    ])
+    Alert.alert(
+      '繰越処理',
+      '日付の繰越処理を行います。タスクの完了状態がリセットされます。よろしいですか？',
+      [{ text: 'OK', onPress: batch }, { text: 'キャンセル' }],
+    )
 
   execBatch = () => {
     this.setState({ ...this.state, requesting: true })
