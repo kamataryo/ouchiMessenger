@@ -122,7 +122,7 @@ export class TaskModal extends React.PureComponent<Props, State> {
             <Button
               title={ '追加' }
               onPress={ onRegisterClick }
-              disabled={ !task.title }
+              disabled={ !task.title || !task.description }
             />
           </ButtonLine>
           <ButtonLine>

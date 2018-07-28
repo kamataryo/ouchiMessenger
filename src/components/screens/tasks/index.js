@@ -134,12 +134,7 @@ export class Tasks extends React.Component<Props, State> {
         this.resetEditingTask()
         this.toggleModal()
       })
-      .catch(
-        err =>
-          console.log(nextTask) ||
-          console.error(err) ||
-          Alert.alert('通信エラー', 'ごめんだにゃん 😹'),
-      )
+      .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
   }
 
   onCancelClick = () => {
