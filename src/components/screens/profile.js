@@ -63,7 +63,7 @@ export class Tasks extends React.PureComponent<Props, State> {
     batch()
       .then(() => {
         this.setState({ ...this.state, requesting: false })
-        Alert.alert('繰越処理完了', '新しいあさが来た')
+        Alert.alert('繰越処理完了', '新しいあさが来た☀️')
       })
       .catch(() => {
         this.setState({ ...this.state, requesting: false })
