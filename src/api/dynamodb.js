@@ -32,3 +32,31 @@ export const remove = taskId =>
       (err, data) => (err ? reject(err) : resolve(data.Items)),
     )
   })
+
+export const batch = () => {
+  get().then(tasks => {
+    const { removes, resurrections } = tasks.reduce(
+      (prev, task) => {
+        if (task.repeat) {
+          prev.resurrections.push(
+            put({
+              ...task,
+              done: false,
+              updatedBy: '==batch',
+              updatedAt: Date(),
+            }),
+          )
+        } else {
+          prev.removes.push(remove(task.taskId))
+        }
+        return prev
+      },
+      {
+        removes: [],
+        resurrections: [],
+      },
+    )
+
+    return Promise.all([...removes, ...resurrections])
+  })
+}
