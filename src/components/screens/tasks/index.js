@@ -46,6 +46,13 @@ export class Tasks extends React.Component<Props, State> {
     }
   }
 
+  static initialTask: Task = {
+    taskId: '',
+    title: '',
+    done: false,
+    repeat: false,
+  }
+
   /**
    * constructor
    * @param  {object} props React props.
@@ -53,7 +60,11 @@ export class Tasks extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props)
-    this.state = { isModalOpen: false, editingTask: {}, refreshing: false }
+    this.state = {
+      isModalOpen: false,
+      editingTask: { ...Tasks.initialTask },
+      refreshing: false,
+    }
   }
 
   shouldComponentUpdate = () => true
@@ -99,13 +110,14 @@ export class Tasks extends React.Component<Props, State> {
   toggleModal = () =>
     this.setState({ ...this.state, isModalOpen: !this.state.isModalOpen })
 
-  updateEditingTask = (key: string) => (value: string) =>
+  updateEditingTask = (key: string) => (value: string | boolean) =>
     this.setState({
       ...this.state,
       editingTask: { ...this.state.editingTask, [key]: value },
     })
 
-  resetEditingTask = () => this.setState({ ...this.state, editingTask: {} })
+  resetEditingTask = () =>
+    this.setState({ ...this.state, editingTask: { ...Tasks.initialTask } })
 
   onRegisterClick = () => {
     const nextTask = {
@@ -122,7 +134,12 @@ export class Tasks extends React.Component<Props, State> {
         this.resetEditingTask()
         this.toggleModal()
       })
-      .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
+      .catch(
+        err =>
+          console.log(nextTask) ||
+          console.error(err) ||
+          Alert.alert('通信エラー', 'ごめんだにゃん 😹'),
+      )
   }
 
   onCancelClick = () => {
@@ -156,6 +173,7 @@ export class Tasks extends React.Component<Props, State> {
           isOpen={ isModalOpen }
           onTitleChange={ this.updateEditingTask('title') }
           onDescriptionChange={ this.updateEditingTask('description') }
+          onRepeatChange={ this.updateEditingTask('repeat') }
           onRegisterClick={ this.onRegisterClick }
           onCancelClick={ this.onCancelClick }
         />

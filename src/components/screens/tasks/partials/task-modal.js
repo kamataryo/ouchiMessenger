@@ -6,23 +6,41 @@ import React from 'react'
 import { connect } from 'react-redux'
 import TextInput from '../../../commons/text-input'
 import Modal from 'react-native-modal'
-import { View, Button, Keyboard, Dimensions } from 'react-native'
+import { View, Button, Switch, Keyboard, Dimensions } from 'react-native'
 import Username from '../../../commons/username'
 import { textGray } from '../../../../colors'
 import styled from 'styled-components'
 
-const BOX_HEIGHT = 67.5 * 3 + 55 * 2
+const BOX_HEIGHT =
+  67.5 * 3 + // 3 TextInput
+  111 + // Toggle Switch
+  55 * 2 // 2Buttons
 const { height: WINDOW_HEIGHT } = Dimensions.get('window')
 const OFFSET = (WINDOW_HEIGHT - BOX_HEIGHT) / 2 - 20
 
 const ButtonLine = styled.View`
   padding-top: 20px;
 `
+
+const SwitchLine = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  margin: 20px;
+`
+
+const SwitchLabel = styled.Text`
+  color: white;
+`
+
 export type OwnProps = {
   isOpen: boolean,
   task: Task,
   onTitleChange: (value: string) => void,
   onDescriptionChange: (value: string) => void,
+  onRepeatChange: (value: boolean) => void,
   onRegisterClick: () => void,
   onCancelClick: () => void,
 }
@@ -77,6 +95,7 @@ export class TaskModal extends React.PureComponent<Props, State> {
       task,
       onTitleChange,
       onDescriptionChange,
+      onRepeatChange,
       onRegisterClick,
       onCancelClick,
     } = this.props
@@ -92,11 +111,19 @@ export class TaskModal extends React.PureComponent<Props, State> {
           />
           <TextInput
             label={ '概要' }
-            value={ task.description }
+            value={ task.description || '' }
             onChange={ onDescriptionChange }
           />
+          <SwitchLine>
+            <SwitchLabel>{'繰り返し'}</SwitchLabel>
+            <Switch value={ task.repeat } onValueChange={ onRepeatChange } />
+          </SwitchLine>
           <ButtonLine>
-            <Button title={ '追加' } onPress={ onRegisterClick } />
+            <Button
+              title={ '追加' }
+              onPress={ onRegisterClick }
+              disabled={ !task.title }
+            />
           </ButtonLine>
           <ButtonLine>
             <Button

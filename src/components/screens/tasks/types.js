@@ -25,6 +25,6 @@ export type Props = {
 
 export type State = {
   isModalOpen: boolean,
-  editingTask: any,
+  editingTask: Task,
   refreshing: boolean,
 }
