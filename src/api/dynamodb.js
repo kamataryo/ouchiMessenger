@@ -46,9 +46,10 @@ export const batch = () => {
               updatedAt: Date(),
             }),
           )
-        } else {
+        } else if (!task.done) {
           prev.removes.push(remove(task.taskId))
         }
+
         return prev
       },
       {
