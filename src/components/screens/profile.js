@@ -21,6 +21,10 @@ const ProfileBackground = styled.View`
   height: 100%;
 `
 
+const ButtonLine = styled.View`
+  padding-top: 20px;
+`
+
 type Props = {}
 
 type State = { requesting: boolean }
@@ -46,6 +50,12 @@ export class Tasks extends React.PureComponent<Props, State> {
     super(props)
     this.state = { requesting: false }
   }
+
+  batch = () =>
+    Alert.alert('繰越処理', '日付の繰越処理を行います。よろしいですか？', [
+      { text: 'OK', onPress: batch },
+      { text: 'キャンセル' },
+    ])
 
   execBatch = () => {
     this.setState({ ...this.state, requesting: true })
@@ -74,7 +84,9 @@ export class Tasks extends React.PureComponent<Props, State> {
           } }
         />
         <Username />
-        <Button onPress={ batch } title={ '日付の繰越' } />
+        <ButtonLine>
+          <Button onPress={ this.batch } title={ '日付の繰越' } />
+        </ButtonLine>
       </ProfileBackground>
     )
   }
