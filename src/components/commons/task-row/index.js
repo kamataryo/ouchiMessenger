@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { View, TouchableOpacity } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 import Swipeable from 'react-native-swipeable'
 
 // components
@@ -15,6 +15,7 @@ import {
   SwipedButton,
   SwipeButtonInnerView,
   SwipeButtonInnerText,
+  BothSide,
 } from './styled'
 
 import type { Task } from '../../../types/task'
@@ -62,7 +63,7 @@ export const TaskRow = (props: OwnProps) => {
   return (
     <Swipeable rightButtons={ rightButtons }>
       <TouchableOpacity onPress={ toggleTask }>
-        <View>
+        <BothSide>
           <OuterRow>
             <Ionicons
               name={
@@ -87,7 +88,14 @@ export const TaskRow = (props: OwnProps) => {
               )}
             </InnerRow>
           </OuterRow>
-        </View>
+          {task.repeat && (
+            <Ionicons
+              name={ 'ios-repeat' }
+              size={ 26 }
+              style={ { color: textPaleGray, padding: 15 } }
+            />
+          )}
+        </BothSide>
       </TouchableOpacity>
     </Swipeable>
   )

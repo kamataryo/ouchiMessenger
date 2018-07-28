@@ -3,13 +3,19 @@
 import styled from 'styled-components'
 import { textGray } from '../../../colors'
 
+export const BothSide = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-bottom-width: 0.5;
+  border-bottom-color: #d6d7da;
+`
+
 export const OuterRow = styled.View`
   display: flex;
   flex-direction: row;
   align-items: center;
   height: 55px;
-  border-bottom-width: 0.5;
-  border-bottom-color: #d6d7da;
 `
 
 export const InnerRow = styled.View`
