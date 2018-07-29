@@ -14,7 +14,7 @@ import tabBarIconHOC from '../../hocs/tab-bar-icon'
 // libs
 import { bgGray } from '../../colors'
 import { headerTitleStyle } from '../../styles'
-import { batch } from '../../api/dynamodb'
+import { batch } from '../../api'
 
 const ProfileBackground = styled.View`
   background-color: ${bgGray};

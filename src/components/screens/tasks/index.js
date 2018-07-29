@@ -28,7 +28,7 @@ import {
   put as dynamoPut,
   get as dynamoGet,
   remove as dynamoRemove,
-} from '../../../api/dynamodb'
+} from '../../../api'
 
 const FlatList = styled.FlatList`
   height: 100%;
