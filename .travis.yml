@@ -4,5 +4,6 @@ node_js:
 
 script:
   # - "npm test"
+  - "cp .env.sample.js .env.js"
   - "npm run lint"
   - "npm run flow"
