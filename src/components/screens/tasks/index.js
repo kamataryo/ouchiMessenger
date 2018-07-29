@@ -65,6 +65,7 @@ export class Tasks extends React.Component<Props, State> {
       editingTask: { ...Tasks.initialTask },
       refreshing: false,
     }
+    this.onRefresh()
   }
 
   shouldComponentUpdate = () => true
@@ -77,7 +78,10 @@ export class Tasks extends React.Component<Props, State> {
         this.props.updateTasks(tasks)
         this.setState({ ...this.state, refreshing: false })
       })
-      .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
+      .catch(() => {
+        Alert.alert('通信エラー', 'ごめんだにゃん 😹')
+        this.setState({ ...this.state, refreshing: false })
+      })
   }
 
   renderItem = ({ item, index }: any) => (
@@ -92,18 +96,17 @@ export class Tasks extends React.Component<Props, State> {
     toggleTask: (task: Task, index: number) => () => {
       const updatedAt = moment(Date()).format('HH:mm')
       const updatedBy = this.props.username
-      this.props.toggleTask(index, updatedAt, updatedBy)
-      dynamoPut({ ...task, updatedAt, updatedBy, done: !task.done }).catch(() =>
-        Alert.alert('通信エラー', 'ごめんだにゃん 😹'),
-      )
+
+      dynamoPut({ ...task, updatedAt, updatedBy, done: !task.done })
+        .then(() => this.props.toggleTask(index, updatedAt, updatedBy))
+        .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
     },
 
     deleteTask: (task: Task, index: number) => () => {
       const { taskId } = task
-      dynamoRemove(taskId).catch(() =>
-        Alert.alert('通信エラー', 'ごめんだにゃん 😹'),
-      )
-      this.props.deleteTask(index)
+      dynamoRemove(taskId)
+        .then(() => this.props.deleteTask(index))
+        .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
     },
   }
 
@@ -149,6 +152,10 @@ export class Tasks extends React.Component<Props, State> {
   render() {
     const { isModalOpen, editingTask, refreshing } = this.state
     const { tasks } = this.props
+    const listData = tasks.map(task => ({
+      ...task,
+      key: task.taskId.toString(),
+    }))
 
     return (
       <View style={ { paddingBottom: 67 } }>
@@ -160,7 +167,7 @@ export class Tasks extends React.Component<Props, State> {
               onRefresh={ this.onRefresh }
             />
           }
-          data={ tasks.map(task => ({ ...task, key: task.taskId.toString() })) }
+          data={ listData }
           renderItem={ this.renderItem }
         />
         <TaskModal
