@@ -9,55 +9,67 @@ AWS.config.region = region
 
 const client = new AWS.DynamoDB.DocumentClient({ region })
 
+const baseParams = { TableName }
+const afterAll = (resolve, reject) => (err, data) =>
+  err ? reject(err) : resolve(data.Items)
+
 export const get = () =>
-  new Promise((resolve, reject) => {
-    const params = { TableName }
-    client.scan(
-      params,
-      (err, data) => (err ? reject(err) : resolve(data.Items)),
-    )
-  })
+  new Promise((resolve, reject) =>
+    client.scan(baseParams, afterAll(resolve, reject)),
+  )
 
-export const put = task =>
-  new Promise((resolve, reject) => {
-    const params = { TableName, Item: task }
-    client.put(params, (err, data) => (err ? reject(err) : resolve(data.Items)))
-  })
+export const put = task => {
+  const params = { ...baseParams, Item: task }
+  return new Promise((resolve, reject) =>
+    client.put(params, afterAll(resolve, reject)),
+  )
+}
 
-export const remove = taskId =>
-  new Promise((resolve, reject) => {
-    const params = { TableName, Key: { taskId } }
-    client.delete(
-      params,
-      (err, data) => (err ? reject(err) : resolve(data.Items)),
-    )
-  })
+export const remove = taskId => {
+  const params = { ...baseParams, Key: { taskId } }
+  return new Promise((resolve, reject) =>
+    client.delete(params, afterAll(resolve, reject)),
+  )
+}
 
 export const batch = () => {
   get().then(tasks => {
-    const { removes, resurrections } = tasks.reduce(
+    const { removingTaskIds, resurrectingTask } = tasks.reduce(
       (prev, task) => {
         if (task.repeat) {
-          prev.resurrections.push(
-            put({
-              ...task,
-              done: false,
-              updatedBy: '==batch',
-              updatedAt: Date(),
-            }),
-          )
+          prev.resurrectingTask.push({
+            ...task,
+            done: false,
+            updatedBy: '==batch',
+            updatedAt: Date(),
+          })
         } else if (!task.done) {
-          prev.removes.push(remove(task.taskId))
+          prev.removingTaskIds.push(task.taskId)
         }
 
         return prev
       },
       {
-        removes: [],
-        resurrections: [],
+        removingTaskIds: [],
+        resurrectingTask: [],
       },
     )
 
-    return Promise.all([...removes, ...resurrections])
+    const params = {
+      RequestItems: {
+        [TableName]: [
+          ...removingTaskIds.map(taskId => ({
+            DeleteRequest: { Key: { taskId } },
+          })),
+          ...resurrectingTask.map(task => ({
+            PutRequest: { Item: task },
+          })),
+        ],
+      },
+    }
+
+    return new Promise((resolve, reject) =>
+      client.batchWrite(params, afterAll(resolve, reject)),
+    )
   })
 }
