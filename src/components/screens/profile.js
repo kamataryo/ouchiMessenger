@@ -4,7 +4,6 @@ import React from 'react'
 import styled from 'styled-components'
 
 // comopnents
-import { Text } from 'react-native'
 import Username from '../commons/username'
 import { Header } from 'react-native-elements'
 
@@ -12,7 +11,7 @@ import { Header } from 'react-native-elements'
 import tabBarIconHOC from '../../hocs/tab-bar-icon'
 
 // libs
-import { bgGray } from '../../colors'
+import { bgGray, textGray } from '../../colors'
 import { headerTitleStyle } from '../../styles'
 
 const ProfileBackground = styled.View`
@@ -20,8 +19,10 @@ const ProfileBackground = styled.View`
   height: 100%;
 `
 
-const ButtonLine = styled.View`
+const TextLine = styled.Text`
+  text-align: center;
   padding-top: 20px;
+  color: ${textGray};
 `
 
 type Props = {}
@@ -54,9 +55,7 @@ export class Tasks extends React.PureComponent<Props, State> {
           } }
         />
         <Username />
-        <ButtonLine>
-          <Text>{'☀️タスクは毎朝3:00にリセットされます。'}</Text>
-        </ButtonLine>
+        <TextLine>{'☀️タスクは毎朝3:00にリセットされます。'}</TextLine>
       </ProfileBackground>
     )
   }
