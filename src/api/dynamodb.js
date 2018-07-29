@@ -1,6 +1,6 @@
 export const get = ({ TableName, client }) => () => {
   const params = { TableName }
-  new Promise((resolve, reject) =>
+  return new Promise((resolve, reject) =>
     client.scan(
       params,
       (err, data) => (err ? reject(err) : resolve(data.Items)),
