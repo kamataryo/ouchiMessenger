@@ -4,7 +4,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 // comopnents
-import { Button, Alert } from 'react-native'
+import { Text } from 'react-native'
 import Username from '../commons/username'
 import { Header } from 'react-native-elements'
 
@@ -14,7 +14,6 @@ import tabBarIconHOC from '../../hocs/tab-bar-icon'
 // libs
 import { bgGray } from '../../colors'
 import { headerTitleStyle } from '../../styles'
-import { batch } from '../../api'
 
 const ProfileBackground = styled.View`
   background-color: ${bgGray};
@@ -42,36 +41,6 @@ export class Tasks extends React.PureComponent<Props, State> {
   }
 
   /**
-   * constructor
-   * @param  {object} props React props.
-   * @return {void}
-   */
-  constructor(props: Props) {
-    super(props)
-    this.state = { requesting: false }
-  }
-
-  batch = () =>
-    Alert.alert(
-      '繰越処理',
-      '日付の繰越処理を行います。タスクの完了状態がリセットされます。よろしいですか？',
-      [{ text: 'OK', onPress: batch }, { text: 'キャンセル' }],
-    )
-
-  execBatch = () => {
-    this.setState({ ...this.state, requesting: true })
-    batch()
-      .then(() => {
-        this.setState({ ...this.state, requesting: false })
-        Alert.alert('繰越処理完了', '新しいあさが来た☀️')
-      })
-      .catch(() => {
-        this.setState({ ...this.state, requesting: false })
-        Alert.alert('通信失敗', 'ごめんだにゃん')
-      })
-  }
-
-  /**
    * render
    * @return {ReactElement|null|false} render a React element.
    */
@@ -86,7 +55,7 @@ export class Tasks extends React.PureComponent<Props, State> {
         />
         <Username />
         <ButtonLine>
-          <Button onPress={ this.batch } title={ '日付の繰越' } />
+          <Text>{'☀️タスクは毎朝3:00にリセットされます。'}</Text>
         </ButtonLine>
       </ProfileBackground>
     )
