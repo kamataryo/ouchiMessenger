@@ -8,6 +8,13 @@ Family task management application.
 
 ![Add task](./raw/screenshots/02_add-task.png)
 
+## Architecture
+
+[iOS Application] -(1)- [Amazon DynamoDB] -(2)- [AWS Lambda]
+
+(1): Database access to save tasks.
+(2): Batch process to recycle daily tasks.
+
 ## Build and Deploy
 
 ### Database setting
