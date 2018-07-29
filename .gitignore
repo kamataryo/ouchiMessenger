@@ -84,3 +84,6 @@ flow-typed/
 
 # XCode
 UserInterfaceState.xcuserstate
+
+# jest
+.jestcache
