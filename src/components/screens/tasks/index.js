@@ -22,6 +22,7 @@ import tabBarIconHOC from '../../../hocs/tab-bar-icon'
 // libs
 import { createActions as createTaskActions } from '../../../reducers/task'
 import moment from 'moment'
+import { BOTTOM_TAB_NAVIGATION_HEIGHT } from '../'
 
 // APIs
 import {
@@ -66,22 +67,27 @@ export class Tasks extends React.Component<Props, State> {
       editingTask: { ...Tasks.initialTask },
       refreshing: false,
     }
-    this.onRefresh()
   }
+
+  /**
+   * componentWillMount
+   * @return {void}
+   */
+  componentDidMount = () => this.onRefresh(false)
 
   shouldComponentUpdate = () => true
 
-  onRefresh = () => {
-    this.setState({ ...this.state, refreshing: true })
+  onRefresh = (showDialog: boolean = true) => {
+    showDialog && this.setState({ ...this.state, refreshing: true })
 
     dynamoGet()
       .then((tasks: Task[]) => {
         this.props.updateTasks(tasks)
-        this.setState({ ...this.state, refreshing: false })
+        showDialog && this.setState({ ...this.state, refreshing: false })
       })
       .catch(() => {
-        Alert.alert('通信エラー', 'ごめんだにゃん 😹')
-        this.setState({ ...this.state, refreshing: false })
+        showDialog && Alert.alert('通信エラー', 'ごめんだにゃん 😹')
+        showDialog && this.setState({ ...this.state, refreshing: false })
       })
   }
 
@@ -95,19 +101,30 @@ export class Tasks extends React.Component<Props, State> {
 
   itemProps = {
     toggleTask: (task: Task, index: number) => () => {
-      const updatedAt = moment(Date()).format('HH:mm')
+      const updatedAt = new Date().toISOString()
       const updatedBy = this.props.username
 
       dynamoPut({ ...task, updatedAt, updatedBy, done: !task.done })
-        .then(() => this.props.toggleTask(index, updatedAt, updatedBy))
+        .then(() => {
+          this.props.toggleTask(index, updatedAt, updatedBy)
+        })
         .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
     },
 
     deleteTask: (task: Task, index: number) => () => {
-      const { taskId } = task
-      dynamoRemove(taskId)
-        .then(() => this.props.deleteTask(index))
-        .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
+      Alert.alert('タスクの削除', 'このタスクを削除します。よろしいですか？', [
+        {
+          text: 'OK',
+          onPress: () =>
+            dynamoRemove(task.taskId)
+              .then(() => {
+                this.props.deleteTask(index)
+                this.onRefresh(false)
+              })
+              .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹')),
+        },
+        { text: 'キャンセル' },
+      ])
     },
   }
 
@@ -128,7 +145,7 @@ export class Tasks extends React.Component<Props, State> {
       ...this.state.editingTask,
       taskId: moment().unix() + '_' + this.props.username,
       done: false,
-      updatedAt: Date(),
+      updatedAt: new Date().toISOString(),
       updatedBy: this.props.username,
       displayOrder: 0,
     }
@@ -169,7 +186,7 @@ export class Tasks extends React.Component<Props, State> {
     })
 
     return (
-      <View style={ { paddingBottom: 67 } }>
+      <View style={ { paddingBottom: BOTTOM_TAB_NAVIGATION_HEIGHT } }>
         <TaskHeader toggleModal={ this.toggleModal } />
         <FlatList
           refreshControl={

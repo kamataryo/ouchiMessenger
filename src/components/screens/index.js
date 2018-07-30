@@ -16,6 +16,8 @@ const BottomTabNavigatorConfig = {
   // initialRouteName: 'profile',
 }
 
+export const BOTTOM_TAB_NAVIGATION_HEIGHT = 67
+
 export const RootStack = createBottomTabNavigator(
   RouteConfigs,
   BottomTabNavigatorConfig,

@@ -20,7 +20,7 @@ import {
 
 import type { Task } from '../../../types/task'
 import { textGreen, textPaleGray } from '../../../colors'
-
+import moment from 'moment'
 type OwnProps = {
   task: Task,
   toggleTask: () => void,
@@ -81,7 +81,9 @@ export const TaskRow = (props: OwnProps) => {
               <Title>{task.title}</Title>
               {task.done ? (
                 <Description>
-                  {`${task.updatedBy || '(不明)'} さん ${task.updatedAt || ''}`}
+                  {`${task.updatedBy || '(不明)'} さん ${moment(
+                    task.updatedAt,
+                  ).format('M/DD HH:mm') || ''}`}
                 </Description>
               ) : (
                 <Description>{task.description}</Description>

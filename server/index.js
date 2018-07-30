@@ -22,9 +22,9 @@ const batch = tasks => {
           ...task,
           done: false,
           updatedBy: '==batch',
-          updatedAt: Date(),
+          updatedAt: new Date().toISOString(),
         })
-      } else if (!task.done) {
+      } else if (task.done) {
         prev.removingTaskIds.push(task.taskId)
       }
 
