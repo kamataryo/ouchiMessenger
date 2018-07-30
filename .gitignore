@@ -78,6 +78,7 @@ flow-typed/
 
 # secret
 .env.js
+secrets/
 
 # Mac
 .DS_Store
