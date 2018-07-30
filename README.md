@@ -10,12 +10,29 @@ Family task management application.
 
 ## Architecture
 
-[iOS Application] -(1)- [Amazon DynamoDB] -(2)- [AWS Lambda]
+```
+[iOS Application] <-(1)-> [Amazon DynamoDB] <-(2)- [AWS Lambda]
+        ^
+        |
+       (3)
+        |
+        v
+   [Amazon SNS]
+```
 
 (1): Database access to save tasks.
 (2): Batch process to recycle daily tasks.
+(3): iOS App triggers push notification and receives.
 
 ## Build and Deploy
+
+### IAM
+
+- create User with policy about SNS and DynamoDB Access.
+
+### SNS setting
+
+- create Platform Application
 
 ### Database setting
 
@@ -28,7 +45,7 @@ Family task management application.
 The batch reset task done/undone state.
 
 1.  Create a lambda role with DynamoDB access.
-2.  Create a lambda function with `/server/index.js` with `TABLE_NAME` and `REGION` environmental variable.
+2.  Create a lambda function with `/server/index.js` with environmental variables, `TABLE_NAME` and `REGION`.
 3.  Set CloudWatch Events cron trigger for batch.
 
 ### app build (iOS only so far)
