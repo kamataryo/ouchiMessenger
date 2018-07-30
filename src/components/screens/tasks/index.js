@@ -177,7 +177,9 @@ export class Tasks extends React.Component<Props, State> {
       key: task.taskId.toString(),
     }))
 
-    listData.sort((a, b) => {
+    const sortingList = [...listData]
+
+    sortingList.sort((a, b) => {
       const compareA: number =
         a.displayOrder === void 0 ? Infinity : a.displayOrder
       const compareB: number =
