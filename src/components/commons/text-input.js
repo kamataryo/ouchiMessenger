@@ -1,8 +1,11 @@
 // @flow
 
 import React from 'react'
-import { View } from 'react-native'
+import { View, Keyboard } from 'react-native'
 import { FormLabel, FormInput } from 'react-native-elements'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import { textGreen, textRed } from 'src/colors'
+import styled from 'styled-components'
 
 type OwnProps = {
   label: string,
@@ -18,6 +21,12 @@ type Props = {
 type State = {
   value: string,
 }
+
+const TouchableIconWrap = styled.TouchableOpacity`
+  position: absolute;
+  right: 20px;
+  top: 20px;
+`
 
 export class TextInput extends React.Component<Props, State> {
   /**
@@ -36,13 +45,24 @@ export class TextInput extends React.Component<Props, State> {
    * @param  {object} nextState next state
    * @return {boolean}          should component update
    */
-  shouldComponentUpdate(nextProps: Props) {
-    return this.props.value !== nextProps.value
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
+    return (
+      this.props.value !== nextProps.value ||
+      this.state.value !== nextState.value
+    )
   }
+
+  // ref
+  Input: any
 
   onChangeText = (value: string) => this.setState({ ...this.state, value })
 
   onBlur = () => this.props.onChange(this.state.value)
+
+  onIconTap = () => {
+    this.Input.blur()
+    Keyboard.dismiss()
+  }
 
   /**
    * render
@@ -52,15 +72,25 @@ export class TextInput extends React.Component<Props, State> {
     const { value } = this.state
     const { label, color } = this.props
 
+    const disabled = !value
+
     return (
       <View>
         <FormLabel>{label}</FormLabel>
         <FormInput
+          ref={ ref => (this.Input = ref) }
           value={ value }
           onChangeText={ this.onChangeText }
           onBlur={ this.onBlur }
           inputStyle={ color ? { color } : void 0 }
         />
+        <TouchableIconWrap onPress={ this.onIconTap } disabled={ disabled }>
+          <Ionicons
+            name={ disabled ? 'ios-close' : 'ios-checkmark' }
+            size={ 30 }
+            style={ { color: disabled ? textRed : textGreen, padding: 15 } }
+          />
+        </TouchableIconWrap>
       </View>
     )
   }

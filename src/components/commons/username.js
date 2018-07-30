@@ -33,6 +33,7 @@ export const Username = (props: Props) => {
       value={ username }
       onChange={ update }
       color={ color }
+      disabled={ username === '' }
     />
   )
 }

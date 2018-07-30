@@ -172,12 +172,14 @@ export class TaskModal extends React.Component<Props, State> {
             value={ task.title || '' }
             onChange={ this.createUpdateHandler('title') }
             color={ 'white' }
+            disabled={ !task.title }
           />
           <TextInput
             label={ '概要' }
             value={ task.description || '' }
             onChange={ this.createUpdateHandler('description') }
             color={ 'white' }
+            disabled={ !task.description }
           />
           <SwitchLine>
             <SwitchLabel>{'繰り返し'}</SwitchLabel>
