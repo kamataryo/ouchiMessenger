@@ -1,6 +1,6 @@
 // @flow
 
-import type { Task } from '../../../types/task'
+import type { Task } from 'src/types/task'
 
 export type OwnProps = {}
 
@@ -15,6 +15,7 @@ export type DispatchProps = {
   addTask: (task: Task) => void,
   deleteTask: (index: number) => void,
   clearTasks: () => void,
+  openModal: (task: Task, index: number) => void,
 }
 
 export type Props = {
@@ -24,7 +25,6 @@ export type Props = {
 }
 
 export type State = {
-  isModalOpen: boolean,
   editingTask: Task,
   refreshing: boolean,
 }

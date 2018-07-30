@@ -4,15 +4,15 @@ import React from 'react'
 import styled from 'styled-components'
 
 // comopnents
-import Username from '../commons/username'
+import Username from 'src/components/commons/username'
 import { Header } from 'react-native-elements'
 
 // HOCs
-import tabBarIconHOC from '../../hocs/tab-bar-icon'
+import tabBarIconHOC from 'src/hocs/tab-bar-icon'
 
 // libs
-import { bgGray, textGray } from '../../colors'
-import { headerTitleStyle } from '../../styles'
+import { bgGray, textGray } from 'src/colors'
+import { headerTitleStyle } from 'src/styles'
 
 const ProfileBackground = styled.View`
   background-color: ${bgGray};

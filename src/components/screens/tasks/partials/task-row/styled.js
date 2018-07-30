@@ -1,7 +1,7 @@
 // @flow
 
 import styled from 'styled-components'
-import { textGray } from '../../../colors'
+import { textGray } from 'src/colors'
 
 export const BothSide = styled.View`
   display: flex;

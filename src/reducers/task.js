@@ -1,7 +1,7 @@
 // @flow
 
 // types
-import type { Task } from '../types/task'
+import type { Task } from 'src/types/task'
 export type TaskState = { data: Task[] }
 
 // libs
@@ -10,6 +10,7 @@ import update from 'immutability-helper'
 const UPDATE_TASKS = 'TASKS.UPDATE_TASKS'
 const TOGGLE_TASK = 'TASKS.TOGGLE_TASK'
 const ADD_TASK = 'TASKS.ADD_TASK'
+const UPDATE_TASK = 'TASKS.UPDATE_TASK'
 const DELETE_TASK = 'TASKS.DELETE_TASK'
 const CLEAR_TASKS = 'TASKS.CLEAR_TASKS'
 
@@ -26,6 +27,11 @@ type ToggleTaskAction = {
 type AddTaskAction = {
   type: typeof ADD_TASK,
   payload: { task: Task },
+}
+
+type UpdateTaskAction = {
+  type: typeof UPDATE_TASK,
+  payload: { index: number, taskProps: any },
 }
 
 type DeleteTaskAction = {
@@ -46,6 +52,7 @@ type TaskActions =
   | UpdateTasksAction
   | ToggleTaskAction
   | AddTaskAction
+  | UpdateTaskAction
   | DeleteTaskAction
   | ClearTasksAction
 
@@ -65,6 +72,10 @@ export const createActions = {
   addTask: (task: Task): AddTaskAction => ({
     type: ADD_TASK,
     payload: { task },
+  }),
+  updateTask: (index: number, taskProps: any): UpdateTaskAction => ({
+    type: UPDATE_TASK,
+    payload: { index, taskProps },
   }),
   deleteTask: (index: number): DeleteTaskAction => ({
     type: DELETE_TASK,
@@ -101,6 +112,16 @@ export const reducer = (
     const addTaskAction: AddTaskAction = action
     return update(state, {
       data: { $push: [addTaskAction.payload.task] },
+    })
+  } else if (action.type === UPDATE_TASK) {
+    const updateTaskAction: UpdateTaskAction = action
+    const { index, taskProps } = updateTaskAction.payload
+    return update(state, {
+      data: {
+        [index]: {
+          $merge: taskProps,
+        },
+      },
     })
   } else if (action.type === DELETE_TASK) {
     const deleteTaskAction: DeleteTaskAction = action

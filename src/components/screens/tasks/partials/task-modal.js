@@ -1,15 +1,23 @@
 // @flow
-import type { Task } from '../../../../types/task'
-import type { StoreState } from '../../../../types/store'
+import type { Task } from 'src/types/task'
+import type { StoreState } from 'src/types/store'
 
 import React from 'react'
 import { connect } from 'react-redux'
-import TextInput from '../../../commons/text-input'
+import TextInput from 'src/components/commons/text-input'
 import Modal from 'react-native-modal'
-import { View, Button, Switch, Keyboard, Dimensions } from 'react-native'
-import Username from '../../../commons/username'
-import { textGray } from '../../../../colors'
+import { View, Button, Switch, Keyboard, Dimensions, Alert } from 'react-native'
+import Username from 'src/components/commons/username'
+import { textGray } from 'src/colors'
 import styled from 'styled-components'
+
+import moment from 'moment'
+// APIs
+import { put as dynamoPut } from 'src/api'
+
+// action creators
+import { createActions as createModalActions } from 'src/reducers/modal'
+import { createActions as createTaskActions } from 'src/reducers/task'
 
 const BOX_HEIGHT =
   67.5 * 3 + // 3 TextInput
@@ -35,23 +43,27 @@ const SwitchLabel = styled.Text`
   color: white;
 `
 
-export type OwnProps = {
-  isOpen: boolean,
-  task: Task,
-  onTitleChange: (value: string) => void,
-  onDescriptionChange: (value: string) => void,
-  onRepeatChange: (value: boolean) => void,
-  onRegisterClick: () => void,
-  onCancelClick: () => void,
-}
+export type OwnProps = {}
 
 export type StateProps = {
+  isOpen: boolean,
+  task?: Task,
+  taskIndex: number,
   username: string,
+}
+
+export type DispatchProps = {
+  resetModal: () => void,
+  closeModal: () => void,
+  updateModalTask: (taskProps: any) => void,
+  addTask: (task: Task) => void,
+  updateTask: (index: number, taskProps: any) => void,
 }
 
 export type Props = {
   ...$Exact<OwnProps>,
   ...$Exact<StateProps>,
+  ...$Exact<DispatchProps>,
 }
 
 export type State = {
@@ -84,21 +96,48 @@ export class TaskModal extends React.PureComponent<Props, State> {
     this.state.listeners.forEach(listener => listener.remove())
   }
 
+  createUpdateHandler = (key: string) => (value: string | boolean) =>
+    this.props.updateModalTask({ [key]: value })
+
+  onUpdateClick = () =>
+    dynamoPut(this.props.task)
+      .then(() => {
+        this.props.updateTask(this.props.taskIndex, this.props.task)
+        this.props.closeModal()
+      })
+      .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
+
+  onAddClick = () => {
+    const nextTask = {
+      ...this.props.task,
+      taskId: moment().unix() + '_' + this.props.username,
+      done: false,
+      updatedAt: new Date().toISOString(),
+      updatedBy: this.props.username,
+      displayOrder: 0,
+    }
+
+    dynamoPut(nextTask)
+      .then(() => {
+        this.props.addTask(nextTask)
+        this.props.closeModal()
+      })
+      .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
+  }
+
+  onCancelClick = () => {
+    this.props.resetModal()
+    this.props.closeModal()
+  }
+
   /**
    * render
    * @return {ReactElement|null|false} render a React element.
    */
   render() {
     const { offset } = this.state
-    const {
-      isOpen,
-      task,
-      onTitleChange,
-      onDescriptionChange,
-      onRepeatChange,
-      onRegisterClick,
-      onCancelClick,
-    } = this.props
+    const { isOpen, task = {} } = this.props
+    const isEditMode = this.props.taskIndex > -1
 
     return (
       <Modal isVisible={ isOpen }>
@@ -106,29 +145,32 @@ export class TaskModal extends React.PureComponent<Props, State> {
           <Username />
           <TextInput
             label={ 'タイトル' }
-            value={ task.title }
-            onChange={ onTitleChange }
+            value={ task.title || '' }
+            onChange={ this.createUpdateHandler('title') }
           />
           <TextInput
             label={ '概要' }
             value={ task.description || '' }
-            onChange={ onDescriptionChange }
+            onChange={ this.createUpdateHandler('description') }
           />
           <SwitchLine>
             <SwitchLabel>{'繰り返し'}</SwitchLabel>
-            <Switch value={ task.repeat } onValueChange={ onRepeatChange } />
+            <Switch
+              value={ !!task.repeat }
+              onValueChange={ this.createUpdateHandler('repeat') }
+            />
           </SwitchLine>
           <ButtonLine>
             <Button
-              title={ '追加' }
-              onPress={ onRegisterClick }
+              title={ isEditMode ? '修正' : '追加' }
+              onPress={ isEditMode ? this.onUpdateClick : this.onAddClick }
               disabled={ !task.title || !task.description }
             />
           </ButtonLine>
           <ButtonLine>
             <Button
               title={ 'キャンセル' }
-              onPress={ onCancelClick }
+              onPress={ this.onCancelClick }
               color={ textGray }
             />
           </ButtonLine>
@@ -139,7 +181,23 @@ export class TaskModal extends React.PureComponent<Props, State> {
 }
 
 export const mapStateToProps = (state: StoreState) => ({
+  isOpen: state.modal.isOpen,
+  task: state.modal.task,
+  taskIndex: state.modal.taskIndex,
   username: state.profile.username,
 })
 
-export default connect(mapStateToProps)(TaskModal)
+export const mapDispatchToProps = (dispatch: any) => ({
+  resetModal: () => dispatch(createModalActions.reset()),
+  closeModal: () => dispatch(createModalActions.close()),
+  updateModalTask: (taskProps: any) =>
+    dispatch(createModalActions.update(taskProps)),
+  addTask: (task: Task) => dispatch(createTaskActions.addTask(task)),
+  updateTask: (taskIndex: number, taskProps: any) =>
+    dispatch(createTaskActions.updateTask(taskIndex, taskProps)),
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TaskModal)

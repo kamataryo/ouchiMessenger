@@ -18,17 +18,19 @@ import {
   BothSide,
 } from './styled'
 
-import type { Task } from '../../../types/task'
-import { textGreen, textPaleGray } from '../../../colors'
+import type { Task } from 'src/types/task'
+import { textGreen, textPaleGray } from 'src/colors'
 import moment from 'moment'
+
 type OwnProps = {
   task: Task,
   toggleTask: () => void,
   deleteTask: () => void,
+  openModal: (task: Task) => void,
 }
 
 export const TaskRow = (props: OwnProps) => {
-  const { task, toggleTask, deleteTask } = props
+  const { toggleTask, deleteTask, openModal, task } = props
 
   const rightButtons = [
     // <SwipedButton key={ '1' } color={ 'red' }>
@@ -62,7 +64,7 @@ export const TaskRow = (props: OwnProps) => {
 
   return (
     <Swipeable rightButtons={ rightButtons }>
-      <TouchableOpacity onPress={ toggleTask }>
+      <TouchableOpacity onPress={ openModal } onLongPress={ toggleTask }>
         <BothSide>
           <OuterRow>
             <Ionicons

@@ -1,31 +1,63 @@
 // @flow
 
 import React from 'react'
+import { connect } from 'react-redux'
 import { Header } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { textWhite } from '../../../../colors'
-import { headerTitleStyle } from '../../../../styles'
+import { headerTitleStyle, headerIcons } from 'src/styles'
 
-export type Props = { toggleModal: () => void }
+// action creators
+import { createActions as createModalActions } from 'src/reducers/modal'
 
-export const TaskHeader = (props: Props) => (
-  <Header
-    leftComponent={
-      <Ionicons name={ 'ios-add' } size={ 26 } style={ { color: 'transparent' } } />
-    }
-    centerComponent={ {
-      text: 'お仕事',
-      style: headerTitleStyle,
-    } }
-    rightComponent={
-      <Ionicons
-        name={ 'ios-add' }
-        size={ 26 }
-        style={ { color: textWhite } }
-        onPress={ props.toggleModal }
-      />
-    }
-  />
-)
+export type Props = {
+  // ownProps
+  toggleMode: () => void,
+  mode: 'normal' | 'sort',
+  // dispatchProps
+  openModal: () => void,
+}
 
-export default TaskHeader
+export const TaskHeader = (props: Props) => {
+  const { openModal, toggleMode, mode } = props
+
+  const headerTitle =
+    mode === 'normal'
+      ? 'お仕事'
+      : mode === 'sort'
+        ? 'お仕事（並べ替え）'
+        : '(不明)'
+
+  return (
+    <Header
+      leftComponent={
+        <Ionicons
+          name={ mode === 'sort' ? 'ios-list' : 'ios-shuffle' }
+          size={ headerIcons.left.size }
+          style={ headerIcons.left.style }
+          onPress={ toggleMode }
+        />
+      }
+      centerComponent={ {
+        text: headerTitle,
+        style: headerTitleStyle,
+      } }
+      rightComponent={
+        <Ionicons
+          name={ mode === 'sort' ? 'ios-checkmark' : 'ios-add' }
+          size={ headerIcons.right.size }
+          style={ headerIcons.right.style }
+          onPress={ mode === 'sort' ? () => {} : openModal }
+        />
+      }
+    />
+  )
+}
+
+const mapDispatchToProps = (dispatch: any) => ({
+  openModal: () => dispatch(createModalActions.openEmpty()),
+})
+
+export default connect(
+  void 0,
+  mapDispatchToProps,
+)(TaskHeader)
