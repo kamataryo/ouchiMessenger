@@ -3,9 +3,8 @@ import React from 'react'
 
 // compoennts
 import { View } from 'react-native'
-import NormalScreen from './sub-screens/normal'
 import TaskHeader from './partials/task-header'
-import SortScreen from './sub-screens/sort'
+import TaskContent from './partials/task-content'
 
 import tabBarIconHOC from 'src/hocs/tab-bar-icon'
 
@@ -13,7 +12,7 @@ import tabBarIconHOC from 'src/hocs/tab-bar-icon'
 import { BOTTOM_TAB_NAVIGATION_HEIGHT } from '../'
 
 type Props = {}
-type State = { mode: 'normal' | 'sort' }
+type State = { mode: 'description' | 'priority' }
 
 export class TaskScreen extends React.Component<Props, State> {
   /**
@@ -34,7 +33,7 @@ export class TaskScreen extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props)
-    this.state = { mode: 'normal' }
+    this.state = { mode: 'description' }
   }
 
   /**
@@ -50,7 +49,7 @@ export class TaskScreen extends React.Component<Props, State> {
   toggleMode = () =>
     this.setState({
       ...this.state,
-      mode: this.state.mode === 'sort' ? 'normal' : 'sort',
+      mode: this.state.mode === 'priority' ? 'description' : 'priority',
     })
 
   /**
@@ -64,11 +63,7 @@ export class TaskScreen extends React.Component<Props, State> {
       <View>
         <TaskHeader toggleMode={ this.toggleMode } mode={ mode } />
         <View style={ { paddingBottom: BOTTOM_TAB_NAVIGATION_HEIGHT } }>
-          {mode === 'normal' ? (
-            <NormalScreen />
-          ) : mode === 'sort' ? (
-            <SortScreen />
-          ) : null}
+          <TaskContent mode={ mode } />
         </View>
       </View>
     )

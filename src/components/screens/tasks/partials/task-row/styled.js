@@ -37,30 +37,7 @@ export const Title = styled.Text`
   margin: 2px;
 `
 
-export const Priority = styled.Text`
-  font-size: 12px;
-  color: ${textGray};
-  margin-left: 2px;
-`
-
 export const Description = styled.Text`
   font-size: 12px;
   margin: 2px;
-`
-
-export const SwipedButton = styled.TouchableHighlight`
-  height: 100%;
-  background-color: ${props => props.color};
-  padding: 0 10px;
-`
-
-export const SwipeButtonInnerView = styled.View`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`
-
-export const SwipeButtonInnerText = styled.Text`
-  color: white;
-  font-size: 16px;
 `

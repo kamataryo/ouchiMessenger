@@ -13,9 +13,9 @@ import styled from 'styled-components'
 // components
 import { View, RefreshControl, TouchableOpacity } from 'react-native'
 import Swipeable from 'react-native-swipeable'
-import { createRightButtons } from '../../partials/task-row/swipe-buttons'
-import TaskRow from '../../partials/task-row'
-import TaskModal from '../../partials/task-modal'
+import { createRightButtons } from '../swipe-buttons'
+import TaskRow from '../task-row'
+import TaskModal from '../task-modal'
 
 // libs
 import { createActions as createModalActions } from 'src/reducers/modal'
@@ -89,7 +89,7 @@ export class Tasks extends React.Component<Props, State> {
           onPress={ this.itemProps.openModal(task, index) }
           onLongPress={ this.itemProps.toggleTask(task, index) }
         >
-          <TaskRow task={ task } />
+          <TaskRow task={ task } mode={ this.props.mode } />
         </TouchableOpacity>
       </Swipeable>
     )

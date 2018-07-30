@@ -11,30 +11,30 @@ import { createActions as createModalActions } from 'src/reducers/modal'
 
 export type Props = {
   // ownProps
-  // toggleMode: () => void,
-  mode: 'normal' | 'sort',
+  toggleMode: () => void,
+  mode: 'description' | 'priority',
   // dispatchProps
   openModal: () => void,
 }
 
 export const TaskHeader = (props: Props) => {
-  const { openModal, mode } = props
+  const { openModal, mode, toggleMode } = props
 
   const headerTitle =
-    mode === 'normal'
+    mode === 'description'
       ? 'お仕事'
-      : mode === 'sort'
-        ? 'お仕事（並べ替え）'
+      : mode === 'priority'
+        ? 'お仕事（優先度）'
         : '(不明)'
 
   return (
     <Header
       leftComponent={
         <Ionicons
-          name={ mode === 'sort' ? 'ios-list' : 'ios-shuffle' }
+          name={ mode === 'description' ? 'ios-swap' : 'ios-list' }
           size={ headerIcons.left.size }
-          style={ { ...headerIcons.left.style, color: 'transparent' } }
-          //     onPress={ toggleMode }
+          style={ headerIcons.left.style }
+          onPress={ toggleMode }
         />
       }
       centerComponent={ {
@@ -46,7 +46,7 @@ export const TaskHeader = (props: Props) => {
           name={ mode === 'sort' ? 'ios-checkmark' : 'ios-add' }
           size={ headerIcons.right.size }
           style={ headerIcons.right.style }
-          onPress={ mode === 'sort' ? () => {} : openModal }
+          onPress={ openModal }
         />
       }
     />

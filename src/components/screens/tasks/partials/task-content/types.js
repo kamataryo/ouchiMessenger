@@ -2,7 +2,9 @@
 
 import type { Task } from 'src/types/task'
 
-export type OwnProps = {}
+export type OwnProps = {
+  mode: 'description' | 'priority',
+}
 
 export type StateProps = {
   username: string,

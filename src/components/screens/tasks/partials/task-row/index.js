@@ -20,10 +20,21 @@ import moment from 'moment'
 
 type OwnProps = {
   task: Task,
+  mode: 'description' | 'priority',
 }
 
 export const TaskRow = (props: OwnProps) => {
-  const { task } = props
+  const { task, mode } = props
+
+  const description =
+    mode === 'description'
+      ? task.done
+        ? `${task.updatedBy || '(不明)'} さん ${moment(task.updatedAt).format(
+          'M/DD HH:mm',
+        ) || ''}`
+        : task.description || ''
+      : `優先度 ${(task.displayOrder || 10).toString()}`
+
   return (
     <BothSide>
       <OuterRow>
@@ -40,15 +51,8 @@ export const TaskRow = (props: OwnProps) => {
         <InnerRow>
           <TitleWrap>
             <Title>{task.title}</Title>
-            <Priority>{`(${(task.displayOrder || 10).toString()})`}</Priority>
           </TitleWrap>
-          <Description>
-            {task.done
-              ? `${task.updatedBy || '(不明)'} さん ${moment(
-                task.updatedAt,
-              ).format('M/DD HH:mm') || ''}`
-              : task.description || ''}
-          </Description>
+          <Description>{description}</Description>
         </InnerRow>
       </OuterRow>
       {task.repeat && (

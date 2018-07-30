@@ -1,10 +1,23 @@
 import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import {
-  SwipedButton,
-  SwipeButtonInnerView,
-  SwipeButtonInnerText,
-} from './styled'
+import styled from 'styled-components'
+
+export const SwipedButton = styled.TouchableHighlight`
+  height: 100%;
+  background-color: ${props => props.color};
+  padding: 0 10px;
+`
+
+export const SwipeButtonInnerView = styled.View`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
+
+export const SwipeButtonInnerText = styled.Text`
+  color: white;
+  font-size: 16px;
+`
 
 export const createRightButtons = deleteTask => [
   <SwipedButton key={ '2' } color={ 'red' } onPress={ deleteTask }>
