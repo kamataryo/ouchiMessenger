@@ -11,13 +11,16 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 // components
-import { View, RefreshControl, Alert } from 'react-native'
+import { View, RefreshControl, TouchableOpacity } from 'react-native'
+import Swipeable from 'react-native-swipeable'
+import { createRightButtons } from '../../partials/task-row/swipe-buttons'
 import TaskRow from '../../partials/task-row'
 import TaskModal from '../../partials/task-modal'
 
 // libs
 import { createActions as createModalActions } from 'src/reducers/modal'
 import { createActions as createTaskActions } from 'src/reducers/task'
+import { Alert } from 'react-native'
 
 // APIs
 import {
@@ -74,14 +77,23 @@ export class Tasks extends React.Component<Props, State> {
       })
   }
 
-  renderItem = ({ item, index }: any) => (
-    <TaskRow
-      task={ item }
-      toggleTask={ this.itemProps.toggleTask(item, index) }
-      deleteTask={ this.itemProps.deleteTask(item, index) }
-      openModal={ this.itemProps.openModal(item, index) }
-    />
-  )
+  renderItem = ({ item }: any) => {
+    const { task, index } = item
+    return (
+      <Swipeable
+        rightButtons={ createRightButtons(
+          this.itemProps.deleteTask(task, index),
+        ) }
+      >
+        <TouchableOpacity
+          onPress={ this.itemProps.openModal(task, index) }
+          onLongPress={ this.itemProps.toggleTask(task, index) }
+        >
+          <TaskRow task={ task } />
+        </TouchableOpacity>
+      </Swipeable>
+    )
+  }
 
   itemProps = {
     toggleTask: (task: Task, index: number) => () => {
@@ -114,15 +126,6 @@ export class Tasks extends React.Component<Props, State> {
       this.props.openModal(task, index),
   }
 
-  updateEditingTask = (key: string) => (value: string | boolean) =>
-    this.setState({
-      ...this.state,
-      editingTask: { ...this.state.editingTask, [key]: value },
-    })
-
-  resetEditingTask = () =>
-    this.setState({ ...this.state, editingTask: { ...Tasks.initialTask } })
-
   /**
    * render
    * @return {ReactElement|null|false} render a React element.
@@ -131,8 +134,11 @@ export class Tasks extends React.Component<Props, State> {
     const { refreshing } = this.state
     const { tasks } = this.props
 
-    const listData: Task[] = tasks.map(task => ({
-      ...task,
+    const listData = tasks.map((task, index) => ({
+      task: {
+        ...task,
+      },
+      index,
       key: (task.taskId || '').toString(),
     }))
 
@@ -140,9 +146,9 @@ export class Tasks extends React.Component<Props, State> {
 
     sortingList.sort((a, b) => {
       const compareA: number =
-        a.displayOrder === void 0 ? Infinity : a.displayOrder
+        a.task.displayOrder === void 0 ? 10 : a.task.displayOrder
       const compareB: number =
-        b.displayOrder === void 0 ? Infinity : b.displayOrder
+        b.task.displayOrder === void 0 ? 10 : b.task.displayOrder
       return compareA - compareB
     })
 
@@ -155,7 +161,7 @@ export class Tasks extends React.Component<Props, State> {
               onRefresh={ this.onRefresh }
             />
           }
-          data={ listData }
+          data={ sortingList }
           renderItem={ this.renderItem }
         />
         <TaskModal />

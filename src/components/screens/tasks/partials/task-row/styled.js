@@ -3,6 +3,13 @@
 import styled from 'styled-components'
 import { textGray } from 'src/colors'
 
+export const TitleWrap = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: baseline;
+`
+
 export const BothSide = styled.View`
   display: flex;
   flex-direction: row;
@@ -28,6 +35,12 @@ export const Title = styled.Text`
   font-size: 16px;
   color: ${textGray};
   margin: 2px;
+`
+
+export const Priority = styled.Text`
+  font-size: 12px;
+  color: ${textGray};
+  margin-left: 2px;
 `
 
 export const Description = styled.Text`

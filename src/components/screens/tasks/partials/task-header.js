@@ -11,14 +11,14 @@ import { createActions as createModalActions } from 'src/reducers/modal'
 
 export type Props = {
   // ownProps
-  toggleMode: () => void,
+  // toggleMode: () => void,
   mode: 'normal' | 'sort',
   // dispatchProps
   openModal: () => void,
 }
 
 export const TaskHeader = (props: Props) => {
-  const { openModal, toggleMode, mode } = props
+  const { openModal, mode } = props
 
   const headerTitle =
     mode === 'normal'
@@ -33,8 +33,8 @@ export const TaskHeader = (props: Props) => {
         <Ionicons
           name={ mode === 'sort' ? 'ios-list' : 'ios-shuffle' }
           size={ headerIcons.left.size }
-          style={ headerIcons.left.style }
-          onPress={ toggleMode }
+          style={ { ...headerIcons.left.style, color: 'transparent' } }
+          //     onPress={ toggleMode }
         />
       }
       centerComponent={ {
