@@ -11,7 +11,6 @@ import {
   Description,
   BothSide,
   TitleWrap,
-  Priority,
 } from './styled'
 
 import type { Task } from 'src/types/task'

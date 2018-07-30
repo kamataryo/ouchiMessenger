@@ -7,7 +7,9 @@ import TextInput from './text-input'
 // action creators
 import { createActions as createProfileActions } from '../../reducers/profile'
 
-type OwnProps = {}
+type OwnProps = {
+  color?: string,
+}
 
 type StateProps = {
   username: string,
@@ -24,8 +26,15 @@ type Props = {
 }
 
 export const Username = (props: Props) => {
-  const { username, update } = props
-  return <TextInput label={ 'お名前' } value={ username } onChange={ update } />
+  const { username, update, color } = props
+  return (
+    <TextInput
+      label={ 'お名前' }
+      value={ username }
+      onChange={ update }
+      color={ color }
+    />
+  )
 }
 
 export const mapStateToProps = (state: any) => ({

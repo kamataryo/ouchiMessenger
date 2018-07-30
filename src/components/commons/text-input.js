@@ -8,6 +8,7 @@ type OwnProps = {
   label: string,
   value: string,
   onChange: (value: string) => void,
+  color?: string,
 }
 
 type Props = {
@@ -49,7 +50,7 @@ export class TextInput extends React.Component<Props, State> {
    */
   render() {
     const { value } = this.state
-    const { label } = this.props
+    const { label, color } = this.props
 
     return (
       <View>
@@ -58,6 +59,7 @@ export class TextInput extends React.Component<Props, State> {
           value={ value }
           onChangeText={ this.onChangeText }
           onBlur={ this.onBlur }
+          inputStyle={ color ? { color } : void 0 }
         />
       </View>
     )

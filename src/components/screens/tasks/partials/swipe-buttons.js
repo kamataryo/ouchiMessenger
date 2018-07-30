@@ -3,6 +3,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import styled from 'styled-components'
 
 export const SwipedButton = styled.TouchableHighlight`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   height: 100%;
   background-color: ${props => props.color};
   padding: 0 10px;

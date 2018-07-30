@@ -47,7 +47,12 @@ const SwitchLine = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-top: 20px;
+  padding-top: 10px;
+  margin: 20px;
+`
+
+const PickerLine = styled.View`
+  padding-top: 10px;
   margin: 20px;
 `
 
@@ -161,35 +166,19 @@ export class TaskModal extends React.Component<Props, State> {
     return (
       <Modal isVisible={ isOpen }>
         <View style={ { top: offset ? -OFFSET : 0 } }>
-          <Username />
+          <Username color={ 'white' } />
           <TextInput
             label={ 'タイトル' }
             value={ task.title || '' }
             onChange={ this.createUpdateHandler('title') }
+            color={ 'white' }
           />
           <TextInput
             label={ '概要' }
             value={ task.description || '' }
             onChange={ this.createUpdateHandler('description') }
+            color={ 'white' }
           />
-          <ButtonLine>
-            <Text style={ { color: 'white' } }>
-              {'優先度(1に近いほど上に表示されます)'}
-            </Text>
-          </ButtonLine>
-          <Picker
-            selectedValue={ task.displayOrder || 10 }
-            itemStyle={ { color: 'white' } }
-            onValueChange={ this.createUpdateHandler('displayOrder') }
-          >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(item => (
-              <Picker.Item
-                key={ item.toString() }
-                label={ item.toString() }
-                value={ item }
-              />
-            ))}
-          </Picker>
           <SwitchLine>
             <SwitchLabel>{'繰り返し'}</SwitchLabel>
             <Switch
@@ -197,6 +186,24 @@ export class TaskModal extends React.Component<Props, State> {
               onValueChange={ this.createUpdateHandler('repeat') }
             />
           </SwitchLine>
+          <PickerLine>
+            <Text style={ { color: 'white', textAlign: 'center' } }>
+              {'優先度 (1に近いほど上に表示されます)'}
+            </Text>
+            <Picker
+              selectedValue={ task.displayOrder || 10 }
+              itemStyle={ { color: 'white', fontSize: 14 } }
+              onValueChange={ this.createUpdateHandler('displayOrder') }
+            >
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(item => (
+                <Picker.Item
+                  key={ item.toString() }
+                  label={ item.toString() }
+                  value={ item }
+                />
+              ))}
+            </Picker>
+          </PickerLine>
           <ButtonLine>
             <Button
               title={ this.isEditMode() ? '修正' : '追加' }
