@@ -1,4 +1,13 @@
-export const get = ({ TableName, client }) => () => {
+// @flow
+
+import type { Task } from '../types/task'
+
+type DynamoDependencies = {
+  TableName: string,
+  client: any,
+}
+
+export const get = ({ TableName, client }: DynamoDependencies) => () => {
   const params = { TableName }
   return new Promise((resolve, reject) =>
     client.scan(
@@ -8,7 +17,9 @@ export const get = ({ TableName, client }) => () => {
   )
 }
 
-export const put = ({ TableName, client }) => task => {
+export const put = ({ TableName, client }: DynamoDependencies) => (
+  task: Task,
+) => {
   const params = { TableName, Item: task }
   return new Promise((resolve, reject) =>
     client.put(
@@ -18,7 +29,9 @@ export const put = ({ TableName, client }) => task => {
   )
 }
 
-export const remove = ({ TableName, client }) => taskId => {
+export const remove = ({ TableName, client }: DynamoDependencies) => (
+  taskId: string,
+) => {
   const params = { TableName, Key: { taskId } }
   return new Promise((resolve, reject) =>
     client.delete(

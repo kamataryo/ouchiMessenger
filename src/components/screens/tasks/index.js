@@ -51,6 +51,7 @@ export class Tasks extends React.Component<Props, State> {
     title: '',
     done: false,
     repeat: false,
+    displayOrder: -1,
   }
 
   /**
@@ -74,7 +75,7 @@ export class Tasks extends React.Component<Props, State> {
     this.setState({ ...this.state, refreshing: true })
 
     dynamoGet()
-      .then(tasks => {
+      .then((tasks: Task[]) => {
         this.props.updateTasks(tasks)
         this.setState({ ...this.state, refreshing: false })
       })
@@ -129,6 +130,7 @@ export class Tasks extends React.Component<Props, State> {
       done: false,
       updatedAt: Date(),
       updatedBy: this.props.username,
+      displayOrder: 0,
     }
 
     dynamoPut(nextTask)
@@ -152,10 +154,19 @@ export class Tasks extends React.Component<Props, State> {
   render() {
     const { isModalOpen, editingTask, refreshing } = this.state
     const { tasks } = this.props
-    const listData = tasks.map(task => ({
+
+    const listData: Task[] = tasks.map(task => ({
       ...task,
       key: task.taskId.toString(),
     }))
+
+    listData.sort((a, b) => {
+      const compareA: number =
+        a.displayOrder === void 0 ? Infinity : a.displayOrder
+      const compareB: number =
+        b.displayOrder === void 0 ? Infinity : b.displayOrder
+      return compareA - compareB
+    })
 
     return (
       <View style={ { paddingBottom: 67 } }>

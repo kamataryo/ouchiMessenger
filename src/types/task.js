@@ -9,4 +9,5 @@ export type Task = {
   updatedBy?: string,
   done: boolean,
   repeat: boolean,
+  displayOrder?: number,
 }
