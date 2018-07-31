@@ -38,9 +38,22 @@ export class TaskScreen extends React.Component<Props> {
   static navigationOptions = () => {
     return {
       title: 'お知らせ',
-      tabBarIcon: tabBarIconHOC('notifications'),
+      tabBarIcon: tabBarIconHOC(
+        'notifications',
+        state => state.notification.data.length,
+      ),
     }
   }
+
+  /**
+   * componentDidMount
+   * @return {void}
+   */
+  // componentDidMount() {
+  //   // NOTE: debugging
+  //   this.props.addNotification(1)
+  //   this.props.addNotification(2)
+  // }
 
   // eslint-disable-next-line
   renderItem = ({ item, index }: { item: any, index: number }) => (
@@ -102,6 +115,7 @@ const mapDispatchToProps = (dispatch: any) => {
       dispatch(createNotificationActions.removeNotification(index)),
     clearNotifications: () =>
       dispatch(createNotificationActions.clearNotifications()),
+    // NOTE: for Debug
     // addNotification: (notification: Notification) =>
     //   dispatch(createNotificationActions.addNotification(notification)),
   }
