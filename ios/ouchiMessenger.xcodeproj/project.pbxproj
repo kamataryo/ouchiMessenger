@@ -1166,7 +1166,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = JSW9FG3V24.com.kamataryo.ouchiMessenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kamataryo.ouchiMessenger;
 				PRODUCT_NAME = ouchiMessenger;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1201,7 +1201,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = JSW9FG3V24.com.kamataryo.ouchiMessenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kamataryo.ouchiMessenger;
 				PRODUCT_NAME = ouchiMessenger;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
