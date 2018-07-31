@@ -37,7 +37,7 @@ export class TaskScreen extends React.Component<Props> {
    */
   static navigationOptions = () => {
     return {
-      title: 'タスク',
+      title: 'お知らせ',
       tabBarIcon: tabBarIconHOC('notifications'),
     }
   }

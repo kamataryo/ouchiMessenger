@@ -25,8 +25,16 @@ import { Alert } from 'react-native'
 // APIs
 import { putTask, getTasks, removeTask } from 'src/api'
 
+import { textGray } from 'src/colors'
+
 const FlatList = styled.FlatList`
   height: 100%;
+`
+
+const TextLine = styled.Text`
+  text-align: center;
+  padding-top: 20px;
+  color: ${textGray};
 `
 
 export class Tasks extends React.Component<Props, State> {
@@ -160,6 +168,8 @@ export class Tasks extends React.Component<Props, State> {
           data={ sortingList }
           renderItem={ this.renderItem }
         />
+        {tasks.length === 0 && <TextLine>{'タスクはありません😕'}</TextLine>}
+
         <TaskModal />
       </View>
     )
