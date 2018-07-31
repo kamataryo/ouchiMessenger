@@ -36,16 +36,20 @@ Family task management application.
 
 ### Database setting
 
-1.  Set up a DynamoDB table with key named `taskId`.
+1.  Set up 2 DynamoDB tables
+
+- `Task`: a table with key named `taskId`
+- `User`: a table with key named `deviceToken`
+
 2.  Create IAM user is authorized with read/write permission for the table.
-3.  Note the table name, the access key id and the secret access key.
+3.  Note the table names, the access key id and the secret access key.
 
 ### batch setting
 
 The batch reset task done/undone state.
 
 1.  Create a lambda role with DynamoDB access.
-2.  Create a lambda function with `/server/index.js` with environmental variables, `TABLE_NAME` and `REGION`.
+2.  Create a lambda function with `/server/index.js` with environmental variables, `TASK_TABLE_NAME` and `REGION`.
 3.  Set CloudWatch Events cron trigger for batch.
 
 ### app build (iOS only so far)

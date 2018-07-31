@@ -23,11 +23,7 @@ import { createActions as createTaskActions } from 'src/reducers/task'
 import { Alert } from 'react-native'
 
 // APIs
-import {
-  put as dynamoPut,
-  get as dynamoGet,
-  remove as dynamoRemove,
-} from 'src/api'
+import { putTask, getTask as getTasks, removeTask } from 'src/api'
 
 const FlatList = styled.FlatList`
   height: 100%;
@@ -66,7 +62,7 @@ export class Tasks extends React.Component<Props, State> {
   onRefresh = (showDialog: boolean = true) => {
     showDialog && this.setState({ ...this.state, refreshing: true })
 
-    dynamoGet()
+    getTasks()
       .then((tasks: Task[]) => {
         this.props.updateTasks(tasks)
         showDialog && this.setState({ ...this.state, refreshing: false })
@@ -100,7 +96,7 @@ export class Tasks extends React.Component<Props, State> {
       const updatedAt = new Date().toISOString()
       const updatedBy = this.props.username
 
-      dynamoPut({ ...task, updatedAt, updatedBy, done: !task.done })
+      putTask({ ...task, updatedAt, updatedBy, done: !task.done })
         .then(() => {
           this.props.toggleTask(index, updatedAt, updatedBy)
         })
@@ -112,7 +108,7 @@ export class Tasks extends React.Component<Props, State> {
         {
           text: 'OK',
           onPress: () =>
-            dynamoRemove(task.taskId)
+            removeTask(task.taskId)
               .then(() => {
                 this.props.deleteTask(index)
                 this.onRefresh(false)

@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk')
 
 const region = process.env.REGION || 'ap-northeast-1'
-const TableName = process.env.TABLE_NAME
+const TableName = process.env.TASK_TABLE_NAME
 const client = new AWS.DynamoDB.DocumentClient({ region })
 
 const get = () => {

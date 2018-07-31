@@ -7,7 +7,7 @@ type DynamoDependencies = {
   client: any,
 }
 
-export const get = ({ TableName, client }: DynamoDependencies) => () => {
+export const getTasks = ({ TableName, client }: DynamoDependencies) => () => {
   const params = { TableName }
   return new Promise((resolve, reject) =>
     client.scan(
@@ -17,7 +17,7 @@ export const get = ({ TableName, client }: DynamoDependencies) => () => {
   )
 }
 
-export const put = ({ TableName, client }: DynamoDependencies) => (
+export const putTask = ({ TableName, client }: DynamoDependencies) => (
   task: Task,
 ) => {
   const params = { TableName, Item: task }
@@ -29,7 +29,7 @@ export const put = ({ TableName, client }: DynamoDependencies) => (
   )
 }
 
-export const remove = ({ TableName, client }: DynamoDependencies) => (
+export const removeTask = ({ TableName, client }: DynamoDependencies) => (
   taskId: string,
 ) => {
   const params = { TableName, Key: { taskId } }

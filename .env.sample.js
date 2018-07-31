@@ -2,6 +2,9 @@
 export default {
   accessKeyId: 'xxx',
   secretAccessKey: 'yyy',
-  region: 'ap-hogehoge',
-  TableName: 'hogehoge',
+  region: 'ap-foo',
+  TableNames: {
+    task: 'bar',
+    user: 'baz',
+  },
 }

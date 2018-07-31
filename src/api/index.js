@@ -1,12 +1,17 @@
 import AWS from 'aws-sdk'
 import credentials from '../../.env'
 import {
-  get as dynamoGet,
-  put as dynamoPut,
-  remove as dynamoRemove,
+  getTasks as dynamoGetTasks,
+  putTask as dynamoPutTask,
+  removeTask as dynamoRemoveTask,
 } from './dynamodb'
 
-const { accessKeyId, secretAccessKey, region, TableName } = credentials
+const {
+  accessKeyId,
+  secretAccessKey,
+  region,
+  TableName: { task: TaskTableName },
+} = credentials
 
 AWS.config = new AWS.Config()
 AWS.config.accessKeyId = accessKeyId
@@ -15,6 +20,6 @@ AWS.config.region = region
 
 const client = new AWS.DynamoDB.DocumentClient({ region })
 
-export const get = dynamoGet({ TableName, client })
-export const put = dynamoPut({ TableName, client })
-export const remove = dynamoRemove({ TableName, client })
+export const getTasks = dynamoGetTasks({ TableName: TaskTableName, client })
+export const putTask = dynamoPutTask({ TableName: TaskTableName, client })
+export const removeTask = dynamoRemoveTask({ TableName: TaskTableName, client })

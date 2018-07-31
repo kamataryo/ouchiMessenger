@@ -22,7 +22,7 @@ import styled from 'styled-components'
 
 import moment from 'moment'
 // APIs
-import { put as dynamoPut } from 'src/api'
+import { putTask } from 'src/api'
 
 // action creators
 import { createActions as createModalActions } from 'src/reducers/modal'
@@ -130,7 +130,7 @@ export class TaskModal extends React.Component<Props, State> {
     this.isEditMode() ? this.onUpdateClick() : this.onAddClick()
 
   onUpdateClick = () =>
-    dynamoPut(this.props.task)
+    putTask(this.props.task)
       .then(() => {
         this.props.updateTask(this.props.taskIndex, this.props.task)
         this.props.closeModal()
