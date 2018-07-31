@@ -1,10 +1,14 @@
 import { createBottomTabNavigator } from 'react-navigation'
 import Tasks from './tasks'
+import Notification from './notification'
 import Profile from './profile'
 
 const RouteConfigs = {
   tasks: {
     screen: Tasks,
+  },
+  notifivation: {
+    screen: Notification,
   },
   profile: {
     screen: Profile,

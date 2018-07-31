@@ -63,8 +63,20 @@ export class NotificationHandler extends React.Component<Props> {
    * @param  {object} nextState next state
    * @return {boolean}          should component update
    */
-  shouldComponentUpdate() {
-    return false
+  shouldComponentUpdate(nextProps: Props) {
+    return this.props.notifications !== nextProps.notifications
+  }
+
+  /**
+   * componentDidUpdate
+   * @param  {object} prevProps prev props
+   * @param  {object} prevState prev state
+   * @param  {object} snapshot  snapshot
+   * @return {void}
+   */
+  componentDidUpdate() {
+    const currentBadgeNumber = this.props.notifications.length
+    PushNotification.setApplicationIconBadgeNumber(currentBadgeNumber)
   }
 
   /**
