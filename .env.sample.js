@@ -3,10 +3,7 @@ export default {
   accessKeyId: 'xxx',
   secretAccessKey: 'yyy',
   region: 'ap-foo',
-  TableNames: {
-    task: 'bar',
-    user: 'baz',
-  },
+  TableName: 'bar'
   PlatformApplicationArn: 'arn:aws:sns:ap-northeast-1/..',
 }
 
