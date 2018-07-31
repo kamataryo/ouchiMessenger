@@ -12,9 +12,9 @@ import PushNotification, {
 /* eslint-disable import/default */
 // $FlowFixMe
 import DeviceInfo from 'react-native-device-info'
+// $FlowFixMe
+import { DUMMY_ACCESS_TOKEN } from '../../../.env'
 /* eslint-enable import/default */
-
-const DUMMY_ACCESS_TOKEN = '==dev'
 
 type Props = {
   // stateProps

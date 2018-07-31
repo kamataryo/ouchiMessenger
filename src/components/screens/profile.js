@@ -14,10 +14,8 @@ import { Header } from 'react-native-elements'
 import tabBarIconHOC from 'src/hocs/tab-bar-icon'
 
 // libs
-import { Alert } from 'react-native'
 import { bgGray, textGray } from 'src/colors'
 import { headerTitleStyle } from 'src/styles'
-import { putUser } from 'src/api'
 
 const ProfileBackground = styled.View`
   background-color: ${bgGray};
@@ -51,8 +49,8 @@ export class Profile extends React.PureComponent<Props, State> {
 
   onChange = (username: string) => {
     const user = { username, deviceToken: this.props.deviceToken }
-
-    putUser(user).catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
+    console.log(user)
+    // create SNS Platform Endpoint here
   }
 
   /**

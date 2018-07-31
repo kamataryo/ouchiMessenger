@@ -33,6 +33,7 @@ Family task management application.
 ### SNS setting
 
 - create Platform Application
+- Note ARN
 
 ### Database setting
 
