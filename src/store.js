@@ -5,9 +5,10 @@ import storage from 'redux-persist/lib/storage'
 /**
  * Reducers
  */
-import modalReducer from './reducers/modal'
-import taskReducer from './reducers/task'
-import profileReducer from './reducers/profile'
+import modalReducer from 'src/reducers/modal'
+import notificationReducer from 'src/reducers/notification'
+import taskReducer from 'src/reducers/task'
+import profileReducer from 'src/reducers/profile'
 
 const persistConfig = {
   key: 'root',
@@ -16,6 +17,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   modal: modalReducer,
+  notification: notificationReducer,
   task: taskReducer,
   profile: profileReducer,
 })
