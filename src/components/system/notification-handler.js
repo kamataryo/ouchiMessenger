@@ -31,9 +31,9 @@ export class NotificationHandler extends React.Component<Props> {
    */
   componentDidMount() {
     PushNotification.configure({
-      onRegister: deviceToken =>
+      onRegister: ({ token }) =>
         // NOTE: Did it called with Emulator?
-        this.props.updateDeviceToken(deviceToken || DUMMY_ACCESS_TOKEN),
+        this.props.updateDeviceToken(token || DUMMY_ACCESS_TOKEN),
 
       onNotification: notification => {
         const currentBadgeNumber = this.props.notifications.length
