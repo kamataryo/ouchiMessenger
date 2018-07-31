@@ -16,6 +16,7 @@ import tabBarIconHOC from 'src/hocs/tab-bar-icon'
 // libs
 import { bgGray, textGray } from 'src/colors'
 import { headerTitleStyle } from 'src/styles'
+import { updateEndpoint, listEndpoints, publish } from 'src/api'
 
 const ProfileBackground = styled.View`
   background-color: ${bgGray};
@@ -47,9 +48,15 @@ export class Profile extends React.PureComponent<Props, State> {
     }
   }
 
-  onChange = (username: string) => {
-    const user = { username, deviceToken: this.props.deviceToken }
-    console.log(user)
+  onChange = () => {
+    const deviceToken = this.props.deviceToken
+
+    // NOTE: for debug
+    updateEndpoint(deviceToken)
+      .then(() => listEndpoints())
+      .then(endpointArns => publish({ endpointArns }))
+      .then(console.log)
+      .catch(console.error)
     // create SNS Platform Endpoint here
   }
 

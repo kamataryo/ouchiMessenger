@@ -1,28 +1,10 @@
-const JSONparse = jsonstr => {
-  let result
-  try {
-    result = JSON.parse(jsonstr)
-  } catch (e) {
-    console.warn('json parse error: ' + jsonstr + ' cannot be convert to json')
-    result = {}
-  }
-
-  if (typeof result !== 'object') {
-    console.warn('invalid object')
-    result = {}
-  }
-
-  return result
-}
-
-export const updateEndpoint = ({ PlatformApplicationArn, client }) => ({
-  username,
-  deviceToken,
-}) => {
+export const updateEndpoint = ({
+  PlatformApplicationArn,
+  client,
+}) => deviceToken => {
   const params = {
     PlatformApplicationArn,
     Token: deviceToken,
-    CustomUserData: JSON.stringify({ username }),
   }
 
   return new Promise((resolve, reject) =>
@@ -41,12 +23,7 @@ export const listEndpoints = ({ PlatformApplicationArn, client }) => () => {
       (err, data) =>
         err
           ? reject(err)
-          : resolve(
-            data.Endpoints.map(endpoint => ({
-              arn: endpoint.EndpointArn,
-              ...JSONparse(endpoint.Attributes.CustomUserData),
-            })),
-          ),
+          : resolve(data.Endpoints.map(endpoint => endpoint.EndpointArn)),
     ),
   )
 }
@@ -57,7 +34,10 @@ export const publish = ({ client }) => ({ title, body, endpointArns }) => {
       const params = {
         TargetArn,
         Message: JSON.stringify({
-          APNS: JSON.stringify({ message: 'test', title, body }),
+          default: JSON.stringify({ message: 'test', title, body }),
+          APNS_SANDBOX: JSON.stringify({
+            aps: { message: 'test', title, body },
+          }),
         }),
         MessageStructure: 'json',
       }

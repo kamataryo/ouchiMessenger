@@ -45,7 +45,7 @@ export class NotificationHandler extends React.Component<Props> {
       // senderID: 'YOUR GCM (OR FCM) SENDER ID',
       permissions: {
         alert: true,
-        badge: true,
+        badge: false,
         sound: true,
       },
       popInitialNotification: true,
