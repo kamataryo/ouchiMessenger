@@ -72,7 +72,7 @@ export const reducer = (
   if (action.type === UPDATE_DEVICE_TOKEN) {
     const updateDeviceTokenAction: updateDeviceTokenAction = action
     return update(state, {
-      deciceToken: { $set: action.payload.deviceToken },
+      deviceToken: { $set: action.payload.deviceToken },
     })
   } else if (action.type === ADD_NOTIFICATION) {
     const addNotificationAction: addNotificationAction = action

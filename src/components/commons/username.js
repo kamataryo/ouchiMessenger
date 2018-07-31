@@ -8,6 +8,7 @@ import TextInput from './text-input'
 import { createActions as createProfileActions } from '../../reducers/profile'
 
 type OwnProps = {
+  onChange?: (username: string) => void,
   color?: string,
 }
 
@@ -42,9 +43,11 @@ export const mapStateToProps = (state: any) => ({
   username: state.profile.username,
 })
 
-export const mapDispatchToProps = (dispatch: any) => ({
-  update: (username: string) =>
-    dispatch(createProfileActions.updateUsername(username)),
+export const mapDispatchToProps = (dispatch: any, ownProps: OwnProps) => ({
+  update: (username: string) => {
+    dispatch(createProfileActions.updateUsername(username))
+    typeof ownProps.onChange === 'function' && ownProps.onChange(username)
+  },
 })
 
 export default connect(

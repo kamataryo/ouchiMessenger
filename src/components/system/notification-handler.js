@@ -9,6 +9,12 @@ import { createActions as createNotificationActions } from 'src/reducers/notific
 import PushNotification, {
   PushNotificationIOS,
 } from 'react-native-push-notification'
+/* eslint-disable import/default */
+// $FlowFixMe
+import DeviceInfo from 'react-native-device-info'
+/* eslint-enable import/default */
+
+const DUMMY_ACCESS_TOKEN = '==dev'
 
 type Props = {
   // stateProps
@@ -25,7 +31,9 @@ export class NotificationHandler extends React.Component<Props> {
    */
   componentDidMount() {
     PushNotification.configure({
-      onRegister: this.props.updateDeviceToken,
+      onRegister: deviceToken =>
+        // NOTE: Did it called with Emulator?
+        this.props.updateDeviceToken(deviceToken || DUMMY_ACCESS_TOKEN),
 
       onNotification: notification => {
         const currentBadgeNumber = this.props.notifications.length
@@ -43,6 +51,10 @@ export class NotificationHandler extends React.Component<Props> {
       popInitialNotification: true,
       requestPermissions: true,
     })
+
+    if (DeviceInfo.isEmulator()) {
+      this.props.updateDeviceToken(DUMMY_ACCESS_TOKEN)
+    }
   }
 
   /**

@@ -57,7 +57,9 @@ export class TextInput extends React.Component<Props, State> {
 
   onChangeText = (value: string) => this.setState({ ...this.state, value })
 
-  onBlur = () => this.props.onChange(this.state.value)
+  onBlur = () => {
+    this.props.onChange(this.state.value)
+  }
 
   onIconTap = () => {
     this.Input.blur()

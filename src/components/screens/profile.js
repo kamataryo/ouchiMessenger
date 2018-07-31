@@ -1,6 +1,9 @@
 // @flow
 
+import type { StoreState } from 'src/types/store'
+
 import React from 'react'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 // comopnents
@@ -11,8 +14,10 @@ import { Header } from 'react-native-elements'
 import tabBarIconHOC from 'src/hocs/tab-bar-icon'
 
 // libs
+import { Alert } from 'react-native'
 import { bgGray, textGray } from 'src/colors'
 import { headerTitleStyle } from 'src/styles'
+import { putUser } from 'src/api'
 
 const ProfileBackground = styled.View`
   background-color: ${bgGray};
@@ -25,11 +30,14 @@ const TextLine = styled.Text`
   color: ${textGray};
 `
 
-type Props = {}
+type Props = {
+  // stateProps
+  deviceToken: string,
+}
 
 type State = { requesting: boolean }
 
-export class Tasks extends React.PureComponent<Props, State> {
+export class Profile extends React.PureComponent<Props, State> {
   /**
    * [navigationOptions description]
    * @type {{navigation: function}} args navigation args
@@ -39,6 +47,12 @@ export class Tasks extends React.PureComponent<Props, State> {
       title: 'ユーザー',
       tabBarIcon: tabBarIconHOC('paw'),
     }
+  }
+
+  onChange = (username: string) => {
+    const user = { username, deviceToken: this.props.deviceToken }
+
+    putUser(user).catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
   }
 
   /**
@@ -54,11 +68,23 @@ export class Tasks extends React.PureComponent<Props, State> {
             style: headerTitleStyle,
           } }
         />
-        <Username />
+        <Username onChange={ this.onChange } />
         <TextLine>{'☀️タスクは毎朝3:00にリセットされます。'}</TextLine>
       </ProfileBackground>
     )
   }
 }
 
-export default Tasks
+/**
+ * map state to props
+ * @param  {object} state    state tree
+ * @param  {object} ownProps own props
+ * @return {object}          state props
+ */
+const mapStateToProps = (state: StoreState) => {
+  return {
+    deviceToken: state.notification.deviceToken,
+  }
+}
+
+export default connect(mapStateToProps)(Profile)

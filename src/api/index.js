@@ -4,13 +4,15 @@ import {
   getTasks as dynamoGetTasks,
   putTask as dynamoPutTask,
   removeTask as dynamoRemoveTask,
+  getUsers as dynamoGetUsers,
+  putUser as dynamoPutUser,
 } from './dynamodb'
 
 const {
   accessKeyId,
   secretAccessKey,
   region,
-  TableName: { task: TaskTableName },
+  TableNames: { task: TaskTableName, user: UserTableName },
 } = credentials
 
 AWS.config = new AWS.Config()
@@ -20,6 +22,12 @@ AWS.config.region = region
 
 const client = new AWS.DynamoDB.DocumentClient({ region })
 
-export const getTasks = dynamoGetTasks({ TableName: TaskTableName, client })
-export const putTask = dynamoPutTask({ TableName: TaskTableName, client })
-export const removeTask = dynamoRemoveTask({ TableName: TaskTableName, client })
+const taskOptions = { TableName: TaskTableName, client }
+const userOptions = { TableName: UserTableName, client }
+
+export const getTasks = dynamoGetTasks(taskOptions)
+export const putTask = dynamoPutTask(taskOptions)
+export const removeTask = dynamoRemoveTask(taskOptions)
+
+export const getUsers = dynamoGetUsers(userOptions)
+export const putUser = dynamoPutUser(userOptions)

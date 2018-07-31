@@ -147,7 +147,7 @@ export class TaskModal extends React.Component<Props, State> {
       displayOrder: 0,
     }
 
-    dynamoPut(nextTask)
+    putTask(nextTask)
       .then(() => {
         this.props.addTask(nextTask)
         this.props.closeModal()

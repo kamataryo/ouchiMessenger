@@ -23,7 +23,7 @@ import { createActions as createTaskActions } from 'src/reducers/task'
 import { Alert } from 'react-native'
 
 // APIs
-import { putTask, getTask as getTasks, removeTask } from 'src/api'
+import { putTask, getTasks, removeTask } from 'src/api'
 
 const FlatList = styled.FlatList`
   height: 100%;
