@@ -16,7 +16,7 @@ import {
   Picker,
   Text,
 } from 'react-native'
-import Username from 'src/components/commons/username'
+
 import { textGray } from 'src/colors'
 import styled from 'styled-components'
 
@@ -166,7 +166,6 @@ export class TaskModal extends React.Component<Props, State> {
     return (
       <Modal isVisible={ isOpen }>
         <View style={ { top: offset ? -OFFSET : 0 } }>
-          <Username color={ 'white' } />
           <TextInput
             label={ 'タイトル' }
             value={ task.title || '' }
