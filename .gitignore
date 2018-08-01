@@ -85,6 +85,9 @@ secrets/
 
 # XCode
 UserInterfaceState.xcuserstate
+project.xcworkspace/
+xcuserdata/
+build/
 
 # jest
 .jestcache
