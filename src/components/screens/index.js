@@ -7,7 +7,7 @@ const RouteConfigs = {
   tasks: {
     screen: Tasks,
   },
-  notifivation: {
+  notification: {
     screen: Notification,
   },
   profile: {
@@ -16,8 +16,9 @@ const RouteConfigs = {
 }
 
 const BottomTabNavigatorConfig = {
-  initialRouteName: 'tasks',
+  // initialRouteName: 'tasks',
   // initialRouteName: 'profile',
+  initialRouteName: 'notification',
 }
 
 export const BOTTOM_TAB_NAVIGATION_HEIGHT = 140
