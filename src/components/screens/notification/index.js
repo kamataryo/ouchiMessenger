@@ -6,14 +6,20 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 // compoennts
-import { View, FlatList, Button } from 'react-native'
+import Swipeable from 'react-native-swipeable'
+import { View, FlatList } from 'react-native'
 import { Header } from 'react-native-elements'
 import NotificationRow from './partials/notification-row'
 import tabBarIconHOC from 'src/hocs/tab-bar-icon'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import { createRightButtons } from 'src/components/commons/swipe-buttons'
+
+// libs
+import { Alert } from 'react-native'
 
 // constants
 import { BOTTOM_TAB_NAVIGATION_HEIGHT } from '../'
-import { headerTitleStyle } from 'src/styles'
+import { headerTitleStyle, headerIcons } from 'src/styles'
 import { createActions as createNotificationActions } from 'src/reducers/notification'
 import { textGray } from 'src/colors'
 
@@ -49,27 +55,39 @@ export class TaskScreen extends React.Component<Props> {
    * componentDidMount
    * @return {void}
    */
-  // componentDidMount() {
-  //   // NOTE: debugging
-  //   this.props.addNotification(1)
-  //   this.props.addNotification(2)
-  // }
+  componentDidMount() {
+    // NOTE: debugging
+    this.props.addNotification(1)
+    this.props.addNotification(2)
+  }
 
   // eslint-disable-next-line
   renderItem = ({ item, index }: { item: any, index: number }) => (
-    <NotificationRow
-      notification={ item.notification }
-      // eslint-disable-next-line
-      removeMe={() => this.props.removeNotification(index)}
-    />
+    <Swipeable
+      rightButtons={ createRightButtons(() =>
+        this.props.removeNotification(index),
+      ) }
+    >
+      <NotificationRow notification={ item.notification } />
+    </Swipeable>
   )
+
+  tryClearNotifications = () => {
+    Alert.alert('全てのお知らせを読みましたか？', '既読にして削除していい？', [
+      {
+        text: 'OK',
+        onPress: this.props.clearNotifications,
+      },
+      { text: 'キャンセル' },
+    ])
+  }
 
   /**
    * render
    * @return {ReactElement|null|false} render a React element.
    */
   render() {
-    const { notifications, clearNotifications } = this.props
+    const { notifications } = this.props
 
     const listData = notifications.map((notification, index) => ({
       notification,
@@ -83,12 +101,22 @@ export class TaskScreen extends React.Component<Props> {
             text: 'お知らせ',
             style: headerTitleStyle,
           } }
+          rightComponent={
+            notifications.length > 0 ? (
+              <Ionicons
+                name={ 'ios-checkmark' }
+                size={ headerIcons.right.size }
+                style={ headerIcons.right.style }
+                onPress={ this.tryClearNotifications }
+              />
+            ) : (
+              void 0
+            )
+          }
         />
         <View style={ { paddingBottom: BOTTOM_TAB_NAVIGATION_HEIGHT } }>
           <FlatList data={ listData } renderItem={ this.renderItem } />
-          {notifications.length > 0 ? (
-            <Button title={ '全て既読にする' } onPress={ clearNotifications } />
-          ) : (
+          {notifications.length === 0 && (
             <TextLine>{'全てのメッセージを見ました。素晴らしい💖'}</TextLine>
           )}
         </View>
@@ -116,8 +144,8 @@ const mapDispatchToProps = (dispatch: any) => {
     clearNotifications: () =>
       dispatch(createNotificationActions.clearNotifications()),
     // NOTE: for Debug
-    // addNotification: (notification: Notification) =>
-    //   dispatch(createNotificationActions.addNotification(notification)),
+    addNotification: (notification: Notification) =>
+      dispatch(createNotificationActions.addNotification(notification)),
   }
 }
 

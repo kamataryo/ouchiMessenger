@@ -13,7 +13,7 @@ import styled from 'styled-components'
 // components
 import { View, RefreshControl, TouchableOpacity } from 'react-native'
 import Swipeable from 'react-native-swipeable'
-import { createRightButtons } from '../swipe-buttons'
+import { createRightButtons } from 'src/components/commons/swipe-buttons'
 import TaskRow from '../task-row'
 import TaskModal from '../task-modal'
 
