@@ -7,6 +7,7 @@ import styled from 'styled-components'
 
 // compoennts
 import Swipeable from 'react-native-swipeable'
+// import TouchSwipe from 'src/components/commons/touch-swipe'
 import { View, FlatList } from 'react-native'
 import { Header } from 'react-native-elements'
 import NotificationRow from './partials/notification-row'
@@ -36,7 +37,12 @@ type Props = {
   clearNotifications: () => void,
 }
 
-export class TaskScreen extends React.Component<Props> {
+type State = {
+  jesture: 'none' | 'swipe' | 'scroll',
+  move: { x: number, y: number },
+}
+
+export class TaskScreen extends React.Component<Props, State> {
   /**
    * [navigationOptions description]
    * @type {{navigation: function}} args navigation args
@@ -52,18 +58,39 @@ export class TaskScreen extends React.Component<Props> {
   }
 
   /**
+   * constructor
+   * @param  {object} props React props.
+   * @return {void}
+   */
+  constructor(props: Props) {
+    super(props)
+    this.state = { jesture: 'none', move: { x: 0, y: 0 } }
+  }
+
+  /**
    * componentDidMount
    * @return {void}
    */
   componentDidMount() {
     // NOTE: debugging
-    this.props.addNotification(1)
-    this.props.addNotification(2)
+    // this.props.addNotification(1)
+    // this.props.addNotification(2)
+  }
+
+  /**
+   * shouldComponentUpdate
+   * @param  {object} nextProps next props
+   * @param  {object} nextState next state
+   * @return {boolean}          should component update
+   */
+  shouldComponentUpdate() {
+    return true
   }
 
   // eslint-disable-next-line
   renderItem = ({ item, index }: { item: any, index: number }) => (
     <Swipeable
+      // swipeEnabled={ this.state.jesture === 'swipe' }
       rightButtons={ createRightButtons(() =>
         this.props.removeNotification(index),
       ) }
@@ -82,20 +109,51 @@ export class TaskScreen extends React.Component<Props> {
     ])
   }
 
+  onWrapperTouchStart = (e: any) =>
+    this.setState({
+      ...this.state,
+      move: { x: e.nativeEvent.locationX, y: e.nativeEvent.locationY },
+    })
+
+  onWrapperTouchMove = (e: any) => {
+    const diffX = Math.abs(this.state.move.x - e.nativeEvent.locationX)
+    const diffY = Math.abs(this.state.move.y - e.nativeEvent.locationY)
+    const diff = Math.sqrt(diffX ** 2 + diffY ** 2)
+    if (diff > 15 && this.state.jesture === 'none') {
+      const jesture = diffX > diffY ? 'swipe' : 'scroll'
+      this.setState({
+        ...this.state,
+        jesture,
+      })
+    }
+  }
+
+  onWrapperTouchEnd = () => {
+    this.setState({
+      ...this.state,
+      jesture: 'none',
+      move: { x: 0, y: 0 },
+    })
+  }
+
   /**
    * render
    * @return {ReactElement|null|false} render a React element.
    */
   render() {
+    // const scrollEnabled = this.state.jesture === 'scroll'
     const { notifications } = this.props
-
     const listData = notifications.map((notification, index) => ({
       notification,
       key: index.toString(),
     }))
 
     return (
-      <View>
+      <View
+        onTouchStart={ this.onWrapperTouchStart }
+        onTouchMove={ this.onWrapperTouchMove }
+        onTouchEnd={ this.onWrapperTouchEnd }
+      >
         <Header
           centerComponent={ {
             text: 'お知らせ',
@@ -115,7 +173,11 @@ export class TaskScreen extends React.Component<Props> {
           }
         />
         <View style={ { paddingBottom: BOTTOM_TAB_NAVIGATION_HEIGHT } }>
-          <FlatList data={ listData } renderItem={ this.renderItem } />
+          <FlatList
+            data={ listData }
+            renderItem={ this.renderItem }
+            // scrollEnabled={ scrollEnabled }
+          />
           {notifications.length === 0 && (
             <TextLine>{'全てのメッセージを見ました。素晴らしい💖'}</TextLine>
           )}
@@ -144,8 +206,8 @@ const mapDispatchToProps = (dispatch: any) => {
     clearNotifications: () =>
       dispatch(createNotificationActions.clearNotifications()),
     // NOTE: for Debug
-    addNotification: (notification: Notification) =>
-      dispatch(createNotificationActions.addNotification(notification)),
+    // addNotification: (notification: Notification) =>
+    //   dispatch(createNotificationActions.addNotification(notification)),
   }
 }
 

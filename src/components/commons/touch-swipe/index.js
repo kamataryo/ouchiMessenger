@@ -1,16 +1,18 @@
 // @flow
 
-import type { Node as ReactNode } from 'react'
+// import type { Node as ReactNode } from 'react'
 import React from 'react'
-import { View, Text, Animated, Dimensions } from 'react-native'
+import { View, Text, Animated } from 'react-native'
 
 export type TouchSwipeOptions = {
   minimumSwipeableDistance?: number,
 }
 
 export type Props = {
-  children: ReactNode,
+  // children: ReactNode,
+  swipeEnabled: boolean,
 }
+
 export type State = {
   swiping: boolean,
   locationXFrom: number,
@@ -42,14 +44,19 @@ export class TouchSwipe extends React.Component<Props, State> {
     return true
   }
 
-  onTouchStart = (e: any) =>
+  onTouchStart = (e: any) => {
     this.setState({
       ...this.state,
       swiping: true,
       locationXFrom: e.nativeEvent.locationX,
     })
+  }
 
   onTouchMove = (e: any) => {
+    if (!this.props.swipeEnabled) {
+      return
+    }
+
     const nextOffsetLeft = this.state.locationXFrom - e.nativeEvent.locationX
     if (nextOffsetLeft - this.state.offsetLeft === 0) {
       return
@@ -64,7 +71,7 @@ export class TouchSwipe extends React.Component<Props, State> {
     // })
   }
 
-  onTouchEnd = (e: any) => {
+  onTouchEnd = () => {
     Animated.timing(this.state.offsetLeft, {
       toValue: 0,
       duration: 20,
@@ -81,7 +88,7 @@ export class TouchSwipe extends React.Component<Props, State> {
    * @return {ReactElement|null|false} render a React element.
    */
   render() {
-    const Child = this.props.children
+    // const Child = this.props.children
     return (
       <View>
         <Animated.View

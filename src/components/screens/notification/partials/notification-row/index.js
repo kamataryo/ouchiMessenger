@@ -14,7 +14,7 @@ type OwnProps = {
 
 export const NotificationRow = (props: OwnProps) => {
   const { notification } = props
-
+  console.log(notification)
   return (
     <BothSide>
       <OuterRow>

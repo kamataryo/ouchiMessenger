@@ -51,12 +51,19 @@ export class Profile extends React.PureComponent<Props, State> {
   onChange = () => {
     const deviceToken = this.props.deviceToken
 
+    console.log('update endpoint')
     updateEndpoint(deviceToken)
       // NOTE: for debug
-      .then(() => listEndpoints())
-      .then(endpointArns => publish({ endpointArns }))
+      .then(() => {
+        console.log('listing endpoint')
+        return listEndpoints()
+      })
+      .then(endpointArns => {
+        console.log('publishing')
+        return publish({ endpointArns })
+      })
       .then(console.log)
-      .catch(console.error)
+      .catch(console.log)
   }
 
   /**
