@@ -51,13 +51,12 @@ export class Profile extends React.PureComponent<Props, State> {
   onChange = () => {
     const deviceToken = this.props.deviceToken
 
-    // NOTE: for debug
     updateEndpoint(deviceToken)
+      // NOTE: for debug
       .then(() => listEndpoints())
       .then(endpointArns => publish({ endpointArns }))
       .then(console.log)
       .catch(console.error)
-    // create SNS Platform Endpoint here
   }
 
   /**
