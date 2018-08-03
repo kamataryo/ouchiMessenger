@@ -13,6 +13,7 @@ import profileReducer from 'src/reducers/profile'
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['modal'],
 }
 
 const rootReducer = combineReducers({

@@ -117,8 +117,10 @@ export class TaskModal extends React.Component<Props, State> {
 
   isEditMode = () => this.props.taskIndex > -1
 
-  createUpdateHandler = (key: string) => (value: string | boolean | number) => {
-    this.props.updateModalTask({ [key]: value })
+  createUpdateHandler = (key: string, select: (e: any) => any = x => x) => (
+    e: any,
+  ) => {
+    this.props.updateModalTask({ [key]: select(e) })
   }
 
   onCancelClick = () => {
@@ -169,14 +171,20 @@ export class TaskModal extends React.Component<Props, State> {
           <TextInput
             label={ 'タイトル' }
             value={ task.title || '' }
-            onChange={ this.createUpdateHandler('title') }
+            onChange={ this.createUpdateHandler(
+              'title',
+              e => e.nativeEvent.text,
+            ) }
             color={ 'white' }
             disabled={ !task.title }
           />
           <TextInput
             label={ '概要' }
             value={ task.description || '' }
-            onChange={ this.createUpdateHandler('description') }
+            onChange={ this.createUpdateHandler(
+              'description',
+              e => e.nativeEvent.text,
+            ) }
             color={ 'white' }
             disabled={ !task.description }
           />

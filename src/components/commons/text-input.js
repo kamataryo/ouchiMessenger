@@ -1,101 +1,97 @@
 // @flow
 
-import React from 'react'
-import { View, Keyboard } from 'react-native'
-import { FormLabel, FormInput } from 'react-native-elements'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import { textGreen, textRed } from 'src/colors'
-import styled from 'styled-components'
+// Graceful patch by @watanabe_yu
+// http://watanabeyu.blogspot.com/2018/04/react-native0542textinputonchangetext.html
+// https://gist.github.com/watanabeyu/ccf59b069987494a03a5f24d005a9857import React from 'react'
 
-type OwnProps = {
-  label: string,
-  value: string,
-  onChange: (value: string) => void,
-  color?: string,
-}
+import React from 'react'
+import { View, TextInput as NativeInput } from 'react-native'
+import { FormLabel, FormValidationMessage } from 'react-native-elements'
 
 type Props = {
-  ...$Exact<OwnProps>,
+  value: string,
+  label: string,
+  color: string,
+  onFocus: () => void,
+  validationMessage: false | string,
 }
 
 type State = {
   value: string,
+  refresh: boolean,
 }
 
-const TouchableIconWrap = styled.TouchableOpacity`
-  position: absolute;
-  right: 20px;
-  top: 20px;
-`
-
-export class TextInput extends React.Component<Props, State> {
+export default class TextInput extends React.Component<Props, State> {
   /**
-   * constructor
-   * @param  {object} props React props.
-   * @return {void}
+   * defaultProps
+   * @type {object}
    */
+  static defaultProps = {
+    onFocus: (x: any) => x,
+    color: '#86939e',
+    validationMessage: false,
+  }
+
   constructor(props: Props) {
     super(props)
-    this.state = { value: props.value }
+    this.state = {
+      value: this.props.value,
+      refresh: false,
+    }
   }
 
-  /**
-   * shouldComponentUpdate
-   * @param  {object} nextProps next props
-   * @param  {object} nextState next state
-   * @return {boolean}          should component update
-   */
   shouldComponentUpdate(nextProps: Props, nextState: State) {
-    return (
-      this.props.value !== nextProps.value ||
-      this.state.value !== nextState.value
-    )
+    if (this.state.value !== nextState.value) {
+      return false
+    }
+
+    return true
   }
 
-  // ref
-  Input: any
-
-  onChangeText = (value: string) => this.setState({ ...this.state, value })
-
-  onBlur = () => {
-    this.props.onChange(this.state.value)
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.value !== this.props.value && this.props.value === '') {
+      // eslint-disable-next-line  react/no-did-update-set-state
+      this.setState({ value: '', refresh: true }, () =>
+        this.setState({ refresh: false }),
+      )
+    }
   }
 
-  onIconTap = () => {
-    this.Input.blur()
-    Keyboard.dismiss()
+  nativeInput: any
+
+  onFocus = () => {
+    this.nativeInput.focus()
+    this.props.onFocus()
   }
 
-  /**
-   * render
-   * @return {ReactElement|null|false} render a React element.
-   */
   render() {
-    const { value } = this.state
-    const { label, color } = this.props
-
-    const disabled = !value
+    if (this.state.refresh) {
+      return null
+    }
 
     return (
       <View>
-        <FormLabel>{label}</FormLabel>
-        <FormInput
-          ref={ ref => (this.Input = ref) }
-          value={ value }
-          onChangeText={ this.onChangeText }
-          onBlur={ this.onBlur }
-          inputStyle={ color ? { color } : void 0 }
+        <FormLabel>{this.props.label}</FormLabel>
+        <NativeInput
+          { ...this.props }
+          ref={ ref => (this.nativeInput = ref) }
+          value={ this.state.value }
+          onFocus={ this.onFocus }
+          style={ {
+            minHeight: 36,
+            marginLeft: 20,
+            marginRight: 20,
+            paddingBottom: 3,
+            borderBottomColor: '#bdc6cf',
+            borderBottomWidth: 1,
+            color: this.props.color,
+            fontSize: 16,
+          } }
         />
-        <TouchableIconWrap onPress={ this.onIconTap } disabled={ disabled }>
-          <Ionicons
-            name={ disabled ? 'ios-close' : 'ios-checkmark' }
-            size={ 30 }
-            style={ { color: disabled ? textRed : textGreen, padding: 15 } }
-          />
-        </TouchableIconWrap>
+        <FormValidationMessage>
+          {this.props.validationMessage}
+        </FormValidationMessage>
       </View>
     )
   }
 }
-
-export default TextInput
