@@ -20,7 +20,7 @@
     "react-test-renderer": "16.3.1"
   },
   "scripts": {
-    "install": "flow-typed install && ./.bin/lottie.sh",
+    "install": "flow-typed install",
     "xc": "open ./ios/ouchiMessenger.xcodeproj",
     "start": "react-native start",
     "android": "react-native run-android",
