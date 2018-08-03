@@ -91,8 +91,8 @@ export class Tasks extends React.Component<Props, State> {
         ) }
       >
         <TouchableOpacity
-          onPress={ this.itemProps.openModal(task, index) }
-          onLongPress={ this.itemProps.toggleTask(task, index) }
+          onLongPress={ this.itemProps.openModal(task, index) }
+          onPress={ this.itemProps.toggleTask(task, index) }
         >
           <TaskRow task={ task } mode={ this.props.mode } />
         </TouchableOpacity>
@@ -126,7 +126,7 @@ export class Tasks extends React.Component<Props, State> {
           publish({
             message,
             endpointArns: data
-              // .filter(e => e.Attributes.Token !== deviceToken)
+              .filter(e => e.Attributes.Token !== deviceToken)
               .map(e => e.EndpointArn),
           }),
         )
