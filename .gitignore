@@ -91,3 +91,6 @@ build/
 
 # jest
 .jestcache
+
+# lotties
+src/assets/lottie
