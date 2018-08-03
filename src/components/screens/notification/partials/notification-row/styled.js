@@ -36,3 +36,8 @@ export const Title = styled.Text`
   color: ${textGray};
   margin: 2px;
 `
+
+export const Description = styled.Text`
+  font-size: 12px;
+  margin: 2px;
+`

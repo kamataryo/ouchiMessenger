@@ -4,6 +4,9 @@ module.exports = {
     node: true,
     jest: true,
   },
+  globals: {
+    __DEV__: false,
+  },
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: 'module',

@@ -15,7 +15,7 @@ export const updateEndpoint = ({
   )
 }
 
-export const listEndpoints = ({ PlatformApplicationArn, client }) => () => {
+export const listEndpointArns = ({ PlatformApplicationArn, client }) => () => {
   const params = { PlatformApplicationArn }
   return new Promise((resolve, reject) =>
     client.listEndpointsByPlatformApplication(
@@ -23,20 +23,25 @@ export const listEndpoints = ({ PlatformApplicationArn, client }) => () => {
       (err, data) =>
         err
           ? reject(err)
-          : resolve(data.Endpoints.map(endpoint => endpoint.EndpointArn)),
+          : resolve(
+            data.Endpoints.filter(
+              endpoint => endpoint.Attributes.Enabled === 'true',
+            ),
+          ),
     ),
   )
 }
 
-export const publish = ({ client }) => ({ title, body, endpointArns }) => {
+export const publish = ({ client }) => ({ message, endpointArns }) => {
   return Promise.all(
     endpointArns.map(TargetArn => {
       const params = {
         TargetArn,
         Message: JSON.stringify({
-          default: JSON.stringify({ message: 'test', title, body }),
+          default: JSON.stringify({ aps: { alert: message } }),
+          APNS: JSON.stringify({ aps: { alert: message } }),
           APNS_SANDBOX: JSON.stringify({
-            aps: { message: 'test', title, body },
+            aps: { alert: message },
           }),
         }),
         MessageStructure: 'json',

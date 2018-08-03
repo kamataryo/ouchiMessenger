@@ -68,16 +68,6 @@ export class TaskScreen extends React.Component<Props, State> {
   }
 
   /**
-   * componentDidMount
-   * @return {void}
-   */
-  componentDidMount() {
-    // NOTE: debugging
-    // this.props.addNotification(1)
-    // this.props.addNotification(2)
-  }
-
-  /**
    * shouldComponentUpdate
    * @param  {object} nextProps next props
    * @param  {object} nextState next state
@@ -95,12 +85,15 @@ export class TaskScreen extends React.Component<Props, State> {
         this.props.removeNotification(index),
       ) }
     >
-      <NotificationRow notification={ item.notification } />
+      <NotificationRow
+        notification={ item.notification }
+        removeMe={ () => this.props.removeNotification(index) }
+      />
     </Swipeable>
   )
 
   tryClearNotifications = () => {
-    Alert.alert('全てのお知らせを読みましたか？', '既読にして削除していい？', [
+    Alert.alert('読んだ？', '全て削除していい？', [
       {
         text: 'OK',
         onPress: this.props.clearNotifications,
@@ -205,9 +198,6 @@ const mapDispatchToProps = (dispatch: any) => {
       dispatch(createNotificationActions.removeNotification(index)),
     clearNotifications: () =>
       dispatch(createNotificationActions.clearNotifications()),
-    // NOTE: for Debug
-    // addNotification: (notification: Notification) =>
-    //   dispatch(createNotificationActions.addNotification(notification)),
   }
 }
 

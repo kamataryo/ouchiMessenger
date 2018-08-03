@@ -7,6 +7,7 @@ export type OwnProps = {
 }
 
 export type StateProps = {
+  deviceToken: string,
   username: string,
   tasks: Task[],
 }

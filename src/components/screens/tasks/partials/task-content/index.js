@@ -24,6 +24,7 @@ import { Alert } from 'react-native'
 
 // APIs
 import { putTask, getTasks, removeTask } from 'src/api'
+import { listEndpointArns, publish } from 'src/api'
 
 import { textGray } from 'src/colors'
 
@@ -104,10 +105,31 @@ export class Tasks extends React.Component<Props, State> {
       const updatedAt = new Date().toISOString()
       const updatedBy = this.props.username
 
-      putTask({ ...task, updatedAt, updatedBy, done: !task.done })
-        .then(() => {
-          this.props.toggleTask(index, updatedAt, updatedBy)
-        })
+      const nextTaskProps = {
+        ...task,
+        updatedAt,
+        updatedBy,
+        done: !task.done,
+      }
+
+      const { deviceToken } = this.props
+      const message = {
+        type: 'complete',
+        title: `「${task.title}」が完了しました！`,
+        data: { taskId: task.taskId, updatedBy, updatedAt },
+      }
+
+      return putTask(nextTaskProps)
+        .then(() => this.props.toggleTask(index, updatedAt, updatedBy))
+        .then(() => (nextTaskProps.done ? listEndpointArns() : []))
+        .then(data =>
+          publish({
+            message,
+            endpointArns: data
+              // .filter(e => e.Attributes.Token !== deviceToken)
+              .map(e => e.EndpointArn),
+          }),
+        )
         .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
     },
 
@@ -179,6 +201,7 @@ export class Tasks extends React.Component<Props, State> {
 export const mapStateToProps = (state: StoreState) => {
   const tasks = Array.isArray(state.task.data) ? state.task.data : []
   return {
+    deviceToken: state.notification.deviceToken,
     username: state.profile.username,
     tasks: tasks,
   }

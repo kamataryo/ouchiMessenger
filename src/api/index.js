@@ -8,7 +8,7 @@ import {
 
 import {
   updateEndpoint as snsUpdateEndpoint,
-  listEndpoints as snsListEndpoints,
+  listEndpointArns as snsListEndpointArns,
   publish as snsPublish,
 } from './aws/sns'
 
@@ -17,8 +17,12 @@ const {
   secretAccessKey,
   region,
   TableName,
-  PlatformApplicationArn,
+  PlatformApplicationArn: _PlatformApplicationArn,
 } = credentials
+
+const PlatformApplicationArn = __DEV__
+  ? _PlatformApplicationArn.development
+  : _PlatformApplicationArn.production
 
 AWS.config = new AWS.Config()
 AWS.config.accessKeyId = accessKeyId
@@ -36,5 +40,5 @@ export const putTask = dynamoPutTask(taskOptions)
 export const removeTask = dynamoRemoveTask(taskOptions)
 
 export const updateEndpoint = snsUpdateEndpoint(snsOptions)
-export const listEndpoints = snsListEndpoints(snsOptions)
+export const listEndpointArns = snsListEndpointArns(snsOptions)
 export const publish = snsPublish(snsOptions)

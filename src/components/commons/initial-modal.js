@@ -67,9 +67,7 @@ export class InitialModal extends React.Component<Props, State> {
 
     updateEndpoint(deviceToken)
       .then(() => this.props.updateUsername(nextUsername))
-      .catch(() => {
-        Alert.alert('通信エラー', 'ごめんね😿')
-      })
+      .catch(() => Alert.alert('通信エラー', 'ごめんね😿'))
   }
 
   /**
