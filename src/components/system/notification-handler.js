@@ -41,11 +41,10 @@ export class NotificationHandler extends React.Component<Props> {
         this.props.addNotification(notification.message)
         notification.finish(PushNotificationIOS.FetchResult.NoData)
       },
-      // ANDROID ONLY: GCM or FCM Sender ID (product_number) (optional - not required for local notifications, but is need to receive remote push notifications)
       // senderID: 'YOUR GCM (OR FCM) SENDER ID',
       permissions: {
         alert: true,
-        badge: false,
+        badge: true,
         sound: true,
       },
       popInitialNotification: true,
