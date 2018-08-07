@@ -119,9 +119,7 @@ export class TaskModal extends React.Component<Props, State> {
 
   createUpdateHandler = (key: string, select: (e: any) => any = x => x) => (
     e: any,
-  ) => {
-    this.props.updateModalTask({ [key]: select(e) })
-  }
+  ) => this.props.updateModalTask({ [key]: select(e) })
 
   onCancelClick = () => {
     this.props.resetModal()
@@ -146,7 +144,6 @@ export class TaskModal extends React.Component<Props, State> {
       done: false,
       updatedAt: new Date().toISOString(),
       updatedBy: this.props.username,
-      displayOrder: 0,
     }
 
     putTask(nextTask)
