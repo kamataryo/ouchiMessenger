@@ -227,7 +227,7 @@ export class TaskScreen extends React.Component<Props, State> {
 const mapStateToProps = state => {
   return {
     notifications: state.notification.data,
-    deviceToken: state.profile.deviceToken,
+    deviceToken: state.notification.deviceToken,
     username: state.profile.username,
   }
 }

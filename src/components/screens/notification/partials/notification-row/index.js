@@ -54,9 +54,11 @@ export const NotificationRow = (props: OwnProps) => {
           <Title numberOfLines={ 1 } ellipsizeMode={ 'tail' }>
             {title}
           </Title>
-          <Description numberOfLines={ 1 } ellipsizeMode={ 'tail' }>
-            {description}
-          </Description>
+          {type !== 'fav' && (
+            <Description numberOfLines={ 1 } ellipsizeMode={ 'tail' }>
+              {description}
+            </Description>
+          )}
         </FlexCol>
       </FlexRow>
       <FlexRow fixed>
