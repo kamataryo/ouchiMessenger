@@ -103,7 +103,13 @@ export class TaskScreen extends React.Component<Props, State> {
   )
 
   requestFav = (index: number) => {
-    const { deviceToken, username } = this.props
+    const {
+      deviceToken,
+      username,
+      // notifications,
+    } = this.props
+    // TODO: limit fav receiving user by props below.
+    // const { notifiersEndpointArn } = notifications[index]
 
     const message = {
       type: 'fav',

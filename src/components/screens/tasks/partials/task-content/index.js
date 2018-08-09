@@ -117,6 +117,7 @@ export class Tasks extends React.Component<Props, State> {
         type: 'complete',
         title: `「${task.title}」が完了しました！`,
         data: { taskId: task.taskId, updatedBy, updatedAt },
+        // TODO: contain users endpointArn as notifiersEndpointArn
       }
 
       return putTask(nextTaskProps)
