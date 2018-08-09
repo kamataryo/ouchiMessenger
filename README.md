@@ -11,18 +11,24 @@ Family task management application.
 ## Architecture
 
 ```
-[iOS Application] <-(1)-> [Amazon DynamoDB] <-(2)- [AWS Lambda]
-        ^
-        |
-       (3)
-        |
-        v
-   [Amazon SNS]
+ [Amazon Cognito]───(3)───┐
+        ^                    │
+        │                    │
+       (1)                   │
+        │                    │
+        v                    v
+[iOS Application] <-(2)-> [AWS Lambda] <-(4)-> [Amazon DynamoDB]
+        ^                     │
+        │                     │
+        │                     │
+  [Amazon SNS]<─(5)───────┘
 ```
 
-(1): Database access to save tasks.
-(2): Batch process to recycle daily tasks.
-(3): iOS App triggers push notification and receives.
+(1): Request authentication
+(2): Request
+(3): security control
+(4): DB Access
+(5): Request Push Notification
 
 ## Build and Deploy
 

@@ -18,16 +18,20 @@ const {
   region,
   TableName,
   PlatformApplicationArn: _PlatformApplicationArn,
+  IdentityPoolId,
 } = credentials
 
 const PlatformApplicationArn = __DEV__
   ? _PlatformApplicationArn.development
   : _PlatformApplicationArn.production
 
-AWS.config = new AWS.Config()
-AWS.config.accessKeyId = accessKeyId
-AWS.config.secretAccessKey = secretAccessKey
+// AWS.config = new AWS.Config()
+// AWS.config.accessKeyId = accessKeyId
+// AWS.config.secretAccessKey = secretAccessKey
 AWS.config.region = region
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+  IdentityPoolId,
+})
 
 const dynamoClient = new AWS.DynamoDB.DocumentClient({ region })
 const snsClient = new AWS.SNS({ region })
