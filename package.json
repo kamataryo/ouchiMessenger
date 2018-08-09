@@ -17,10 +17,12 @@
     "prettier": "^1.13.7",
     "prettier-eslint": "^8.8.2",
     "prettier-eslint-cli": "^4.7.1",
-    "react-test-renderer": "16.3.1"
+    "react-test-renderer": "16.3.1",
+    "semver": "^5.5.0"
   },
   "scripts": {
     "install": "flow-typed install",
+    "postversion": "node .bin/version.js",
     "xc": "open ./ios/ouchiMessenger.xcodeproj",
     "start": "react-native start",
     "android": "react-native run-android",
@@ -39,6 +41,7 @@
     "immutability-helper": "^2.7.1",
     "lottie-react-native": "^2.5.6",
     "moment": "^2.22.2",
+    "plist": "^3.0.1",
     "react": "16.3.1",
     "react-native": "~0.55.3",
     "react-native-device-info": "^0.22.2",
