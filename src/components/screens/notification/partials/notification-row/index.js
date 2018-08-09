@@ -3,14 +3,7 @@
 import React from 'react'
 
 // components
-import {
-  OuterRow,
-  InnerRow,
-  Title,
-  BothSide,
-  TitleWrap,
-  Description,
-} from './styled'
+import { FlexRow, FlexCol, Title, FlexBothSide, Description } from './styled'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import type { Notification } from 'src/types/notification'
@@ -24,33 +17,37 @@ type OwnProps = {
 
 export const NotificationRow = (props: OwnProps) => {
   const {
-    notification: {
-      title,
-      data: { updatedBy, updatedAt },
-    },
+    notification: { title, data: { updatedBy, updatedAt } = {} },
   } = props
-  const description = `${updatedBy || '(不明)'} さん ${moment(updatedAt).format(
-    'M/DD HH:mm',
-  ) || ''}`
+  const description = [
+    `${updatedBy || '(不明)'} さん`,
+    updatedAt ? moment(updatedAt).format('M/DD HH:mm') : false,
+  ]
+    .filter(x => !!x)
+    .join(' ')
 
   return (
-    <BothSide>
-      <OuterRow>
+    <FlexBothSide>
+      <FlexRow>
         <Ionicons name={ 'ios-star-outline' } size={ 26 } style={ { padding: 15 } } />
-        <InnerRow>
-          <TitleWrap>
-            <Title>{title}</Title>
-          </TitleWrap>
-          <Description>{description}</Description>
-        </InnerRow>
-      </OuterRow>
-      {/* <Ionicons
-        name={ 'ios-trash' }
-        size={ 26 }
-        style={ { color: textRed, padding: 15 } }
-        onPress={ removeMe }
-      /> */}
-    </BothSide>
+        <FlexCol>
+          <Title numberOfLines={ 1 } ellipsizeMode={ 'tail' }>
+            {title}
+          </Title>
+          <Description numberOfLines={ 1 } ellipsizeMode={ 'tail' }>
+            {description}
+          </Description>
+        </FlexCol>
+      </FlexRow>
+      <FlexRow fixed>
+        {/*
+        <Ionicons
+          name={ 'ios-trash' }
+          size={ 26 }
+          style={ { color: 'red', padding: 15 } }
+        /> */}
+      </FlexRow>
+    </FlexBothSide>
   )
 }
 

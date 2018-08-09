@@ -65,6 +65,7 @@ export class TaskScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = { jesture: 'none', move: { x: 0, y: 0 } }
+    // this.props.add()
   }
 
   /**
@@ -198,6 +199,13 @@ const mapDispatchToProps = (dispatch: any) => {
       dispatch(createNotificationActions.removeNotification(index)),
     clearNotifications: () =>
       dispatch(createNotificationActions.clearNotifications()),
+    // add: () =>
+    //   dispatch(
+    //     createNotificationActions.addNotification({
+    //       title:
+    //         'abcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefg',
+    //     }),
+    //   ),
   }
 }
 
