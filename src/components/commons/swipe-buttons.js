@@ -34,3 +34,16 @@ export const createRightButtons = deleteTask => [
     </SwipeButtonInnerView>
   </SwipedButton>,
 ]
+
+export const createNotificationRightButtons = deleteTask => [
+  <SwipedButton key={ '2' } color={ 'red' } onPress={ deleteTask }>
+    <SwipeButtonInnerView>
+      <Ionicons
+        name={ 'ios-trash' }
+        size={ 20 }
+        style={ { color: 'white', padding: 2 } }
+      />
+      <SwipeButtonInnerText>{'削除'}</SwipeButtonInnerText>
+    </SwipeButtonInnerView>
+  </SwipedButton>,
+]

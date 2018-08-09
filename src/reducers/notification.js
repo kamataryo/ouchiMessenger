@@ -14,6 +14,7 @@ const UPDATE_DEVICE_TOKEN = 'NOTIFICATION.UPDATE_DEVICE_TOKEN'
 const ADD_NOTIFICATION = 'NOTIFICATION.ADD_NOTIFICATION'
 const REMOVE_NOTIFICATION = 'NOTIFICATION.REMOVE_NOTIFICATION'
 const CLEAR_NOTIFICATIONS = 'NOTIFICATION.CLEAR_NOTIFICATION'
+const FAV_NOTIFICATION = 'NOTIFICATION.FAV_NOTIFICATION'
 
 export type UpdateDeviceTokenAction = {
   type: typeof UPDATE_DEVICE_TOKEN,
@@ -35,6 +36,11 @@ export type ClearNotificationActions = {
   payload: {},
 }
 
+export type FavNotificationAction = {
+  type: typeof FAV_NOTIFICATION,
+  payload: { index: number },
+}
+
 export const initialState: NotificationState = {
   deviceToken: '',
   data: [],
@@ -45,6 +51,7 @@ type NotificationAction =
   | AddNotificationAction
   | RemoveNotificationAction
   | ClearNotificationActions
+  | FavNotificationAction
 
 export const createActions = {
   updateDeviceToken: (deviceToken: string): UpdateDeviceTokenAction => ({
@@ -62,6 +69,10 @@ export const createActions = {
   clearNotifications: (): ClearNotificationActions => ({
     type: CLEAR_NOTIFICATIONS,
     payload: {},
+  }),
+  favNotification: (index: number): FavNotificationAction => ({
+    type: FAV_NOTIFICATION,
+    payload: { index },
   }),
 }
 
@@ -89,6 +100,11 @@ export const reducer = (
       data: {
         $set: [],
       },
+    })
+  } else if (action.type === FAV_NOTIFICATION) {
+    const favNotificationAction: FavNotificationAction = action
+    return update(state, {
+      data: { [favNotificationAction.payload.index]: { read: { $set: true } } },
     })
   } else {
     return state

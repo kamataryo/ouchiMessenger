@@ -13,11 +13,18 @@ import moment from 'moment'
 type OwnProps = {
   notification: Notification,
   // removeMe: () => void,
+  favMe: () => void,
 }
 
 export const NotificationRow = (props: OwnProps) => {
   const {
-    notification: { title, data: { updatedBy, updatedAt } = {} },
+    notification: {
+      type,
+      title,
+      data: { updatedBy, updatedAt } = {},
+      read = false,
+    },
+    favMe,
   } = props
   const description = [
     `${updatedBy || '(不明)'} さん`,
@@ -29,7 +36,20 @@ export const NotificationRow = (props: OwnProps) => {
   return (
     <FlexBothSide>
       <FlexRow>
-        <Ionicons name={ 'ios-star-outline' } size={ 26 } style={ { padding: 15 } } />
+        {type === 'fav' ? (
+          <Ionicons
+            name={ 'ios-heart-outline' }
+            size={ 26 }
+            style={ { padding: 15, color: 'transparent' } }
+          />
+        ) : (
+          <Ionicons
+            name={ read ? 'ios-heart' : 'ios-heart-outline' }
+            size={ 26 }
+            style={ { padding: 15, color: read ? 'red' : void 0 } }
+            onPress={ read ? void 0 : favMe }
+          />
+        )}
         <FlexCol>
           <Title numberOfLines={ 1 } ellipsizeMode={ 'tail' }>
             {title}

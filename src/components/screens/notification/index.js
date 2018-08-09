@@ -13,10 +13,11 @@ import { Header } from 'react-native-elements'
 import NotificationRow from './partials/notification-row'
 import tabBarIconHOC from 'src/hocs/tab-bar-icon'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { createRightButtons } from 'src/components/commons/swipe-buttons'
+import { createNotificationRightButtons } from 'src/components/commons/swipe-buttons'
 
 // libs
 import { Alert } from 'react-native'
+import { listEndpointArns, publish } from 'src/api'
 
 // constants
 import { BOTTOM_TAB_NAVIGATION_HEIGHT } from '../'
@@ -33,8 +34,12 @@ const TextLine = styled.Text`
 type Props = {
   // StateProps
   notifications: Notification[],
+  deviceToken: string,
+  username: string,
+  // dispatchProps
   removeNotification: (index: number) => void,
   clearNotifications: () => void,
+  favNotification: (index: number) => void,
 }
 
 type State = {
@@ -64,7 +69,10 @@ export class TaskScreen extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props)
-    this.state = { jesture: 'none', move: { x: 0, y: 0 } }
+    this.state = {
+      jesture: 'none',
+      move: { x: 0, y: 0 },
+    }
     // this.props.add()
   }
 
@@ -82,16 +90,39 @@ export class TaskScreen extends React.Component<Props, State> {
   renderItem = ({ item, index }: { item: any, index: number }) => (
     <Swipeable
       // swipeEnabled={ this.state.jesture === 'swipe' }
-      rightButtons={ createRightButtons(() =>
+      rightButtons={ createNotificationRightButtons(() =>
         this.props.removeNotification(index),
       ) }
     >
       <NotificationRow
         notification={ item.notification }
         removeMe={ () => this.props.removeNotification(index) }
+        favMe={ () => this.requestFav(index) }
       />
     </Swipeable>
   )
+
+  requestFav = (index: number) => {
+    const { deviceToken, username } = this.props
+
+    const message = {
+      type: 'fav',
+      title: `❤️「${username}」さんから感謝が届きました！`,
+      data: { username },
+    }
+
+    listEndpointArns()
+      .then(data =>
+        publish({
+          message,
+          endpointArns: data
+            .filter(e => e.Attributes.Token !== deviceToken)
+            .map(e => e.EndpointArn),
+        }),
+      )
+      .then(() => this.props.favNotification(index))
+      .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
+  }
 
   tryClearNotifications = () => {
     Alert.alert('読んだ？', '全て削除していい？', [
@@ -190,6 +221,8 @@ export class TaskScreen extends React.Component<Props, State> {
 const mapStateToProps = state => {
   return {
     notifications: state.notification.data,
+    deviceToken: state.profile.deviceToken,
+    username: state.profile.username,
   }
 }
 
@@ -199,6 +232,8 @@ const mapDispatchToProps = (dispatch: any) => {
       dispatch(createNotificationActions.removeNotification(index)),
     clearNotifications: () =>
       dispatch(createNotificationActions.clearNotifications()),
+    favNotification: (index: number) =>
+      dispatch(createNotificationActions.favNotification(index)),
     // add: () =>
     //   dispatch(
     //     createNotificationActions.addNotification({
