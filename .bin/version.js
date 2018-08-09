@@ -16,6 +16,7 @@ const PLIST_PATH = path.join(
   'ouchiMessenger',
   'Info.plist',
 )
+console.log(process.argv)
 const section = process.argv[2]
 
 if (!['patch', 'minor', 'major'].includes(section)) {
