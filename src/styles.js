@@ -15,6 +15,9 @@ export const headerIcons = {
       position: 'absolute',
       bottom: -10,
       left: 0,
+      paddingTop: 10,
+      paddingRight: 10,
+      paddingLeft: 10,
     },
   },
   right: {
@@ -25,6 +28,9 @@ export const headerIcons = {
       position: 'absolute',
       bottom: -10,
       right: 0,
+      paddingTop: 10,
+      paddingRight: 10,
+      paddingLeft: 10,
     },
   },
 }

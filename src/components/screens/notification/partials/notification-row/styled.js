@@ -3,29 +3,25 @@
 import styled from 'styled-components'
 import { textGray } from 'src/colors'
 
-export const TitleWrap = styled.View`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: baseline;
-`
-
-export const BothSide = styled.View`
+export const FlexBothSide = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   border-bottom-width: 0.5;
   border-bottom-color: #d6d7da;
+  padding-right: 10px;
 `
 
-export const OuterRow = styled.View`
+export const FlexRow = styled.View`
   display: flex;
   flex-direction: row;
   align-items: center;
   height: 55px;
+  flex-shrink: ${props => (props.fixed ? 0 : 1)}
+  flex-grow: ${props => (props.fixed ? 0 : 1)}
 `
 
-export const InnerRow = styled.View`
+export const FlexCol = styled.View`
   display: flex;
   flex-direction: column;
   justify-content: space-between;

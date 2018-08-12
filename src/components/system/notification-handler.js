@@ -6,8 +6,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { createActions as createNotificationActions } from 'src/reducers/notification'
 
+import NotificationBar from 'src/components/commons/notification-bar'
+
 import PushNotification from 'react-native-push-notification'
-import { PushNotificationIOS } from 'react-native'
+import { PushNotificationIOS, AppState } from 'react-native'
 /* eslint-disable import/default */
 // $FlowFixMe
 import DeviceInfo from 'react-native-device-info'
@@ -23,7 +25,21 @@ type Props = {
   addNotification: (notification: Notification) => void,
 }
 
-export class NotificationHandler extends React.Component<Props> {
+type State = {
+  foregroundNotifications: { [string]: { id: string } },
+}
+
+export class NotificationHandler extends React.Component<Props, State> {
+  /**
+   * constructor
+   * @param  {object} props React props.
+   * @return {void}
+   */
+  constructor(props: Props) {
+    super(props)
+    this.state = { foregroundNotifications: {} }
+  }
+
   /**
    * componentDidMount
    * @return {void}
@@ -36,9 +52,37 @@ export class NotificationHandler extends React.Component<Props> {
       },
 
       onNotification: notification => {
-        const currentBadgeNumber = this.props.notifications.length
-        PushNotification.setApplicationIconBadgeNumber(currentBadgeNumber + 1)
-        this.props.addNotification(notification.message)
+        if (notification.foreground) {
+          const currentBadgeNumber = this.props.notifications.length
+          PushNotification.setApplicationIconBadgeNumber(currentBadgeNumber + 1)
+          this.props.addNotification(notification.message)
+
+          // toggle foreground notify components
+          const { id } = notification
+
+          this.setState(
+            {
+              ...this.state,
+              foregroundNotifications: {
+                ...this.state.foregroundNotifications,
+                [id]: notification.message,
+              },
+            },
+            () => {
+              const nextForegroundnotifications = {
+                ...this.state.foregroundNotifications,
+              }
+              delete nextForegroundnotifications[id]
+              setTimeout(() => {
+                this.setState({
+                  ...this.state,
+                  foregroundNotifications: nextForegroundnotifications,
+                })
+              }, 10000)
+            },
+          )
+        }
+
         notification.finish(PushNotificationIOS.FetchResult.NoData)
       },
       // senderID: 'YOUR GCM (OR FCM) SENDER ID',
@@ -54,6 +98,9 @@ export class NotificationHandler extends React.Component<Props> {
     if (DeviceInfo.isEmulator()) {
       this.props.updateDeviceToken(DUMMY_ACCESS_TOKEN)
     }
+
+    // set handler to process notifications reached when app is in background
+    AppState.addEventListener('change', this.handleAppStateChange)
   }
 
   /**
@@ -62,8 +109,11 @@ export class NotificationHandler extends React.Component<Props> {
    * @param  {object} nextState next state
    * @return {boolean}          should component update
    */
-  shouldComponentUpdate(nextProps: Props) {
-    return this.props.notifications !== nextProps.notifications
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
+    return (
+      this.props.notifications !== nextProps.notifications ||
+      this.state.foregroundNotifications !== nextState.foregroundNotifications
+    )
   }
 
   /**
@@ -79,11 +129,40 @@ export class NotificationHandler extends React.Component<Props> {
   }
 
   /**
+   * componentWillUnmount
+   * @return {void}
+   */
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange)
+  }
+
+  handleAppStateChange = (nextState: string) => {
+    if (nextState === 'active') {
+      PushNotificationIOS.getDeliveredNotifications(
+        notifications =>
+          notifications &&
+          notifications.forEach(({ userInfo }) =>
+            this.props.addNotification(userInfo.aps.alert),
+          ),
+      )
+      PushNotificationIOS.removeAllDeliveredNotifications()
+    }
+  }
+
+  /**
    * render
    * @return {ReactElement|null|false} render a React element.
    */
   render() {
-    return null
+    const foregroundNotifications = Object.values(
+      this.state.foregroundNotifications,
+    )
+
+    // $FlowFixMe
+    return foregroundNotifications.map(notification => (
+      // $FlowFixMe
+      <NotificationBar key={ notification.id } notification={ notification } />
+    ))
   }
 }
 

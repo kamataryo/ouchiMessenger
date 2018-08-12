@@ -4,14 +4,7 @@ import React from 'react'
 
 // components
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import {
-  OuterRow,
-  InnerRow,
-  Title,
-  Description,
-  BothSide,
-  TitleWrap,
-} from './styled'
+import { FlexRow, FlexCol, Title, Description, FlexBothSide } from './styled'
 
 import type { Task } from 'src/types/task'
 import { textGreen, textPaleGray } from 'src/colors'
@@ -35,8 +28,8 @@ export const TaskRow = (props: OwnProps) => {
       : `優先度 ${(task.displayOrder || 10).toString()}`
 
   return (
-    <BothSide>
-      <OuterRow>
+    <FlexBothSide>
+      <FlexRow>
         <Ionicons
           name={
             task.done ? 'ios-checkmark-circle' : 'ios-checkmark-circle-outline'
@@ -47,21 +40,25 @@ export const TaskRow = (props: OwnProps) => {
             padding: 15,
           } }
         />
-        <InnerRow>
-          <TitleWrap>
-            <Title>{task.title}</Title>
-          </TitleWrap>
-          <Description>{description}</Description>
-        </InnerRow>
-      </OuterRow>
-      {task.repeat && (
-        <Ionicons
-          name={ 'ios-repeat' }
-          size={ 26 }
-          style={ { color: textPaleGray, padding: 15 } }
-        />
-      )}
-    </BothSide>
+        <FlexCol>
+          <Title numberOfLines={ 1 } ellipsizeMode={ 'tail' }>
+            {task.title}
+          </Title>
+          <Description numberOfLines={ 1 } ellipsizeMode={ 'tail' }>
+            {description}
+          </Description>
+        </FlexCol>
+      </FlexRow>
+      <FlexRow fixed>
+        {task.repeat && (
+          <Ionicons
+            name={ 'ios-repeat' }
+            size={ 26 }
+            style={ { color: textPaleGray, padding: 15 } }
+          />
+        )}
+      </FlexRow>
+    </FlexBothSide>
   )
 }
 

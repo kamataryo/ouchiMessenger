@@ -2,7 +2,7 @@
 
 import React from 'react'
 import styled from 'styled-components'
-import { badgeRed } from 'src/colors'
+import { badgeRed, textWhite } from 'src/colors'
 
 const BadgeWrap = styled.View`
   display: flex;
@@ -18,7 +18,7 @@ const BadgeWrap = styled.View`
 `
 
 const BadgeText = styled.Text`
-  color: white;
+  color: ${textWhite};
   text-align: center;
   font-size: 10px;
   padding-left: ${props => (props.offset ? '1px' : 0)};

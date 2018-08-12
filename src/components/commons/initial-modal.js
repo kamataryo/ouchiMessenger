@@ -5,14 +5,17 @@ import Modal from 'react-native-modal'
 import TextInput from 'src/components/commons/text-input'
 import { Button } from 'react-native'
 import styled from 'styled-components'
-import { createActions as createProfileActions } from '../../reducers/profile'
+import { createActions as createProfileActions } from 'src/reducers/profile'
 import { updateEndpoint } from 'src/api'
 
 // libs
 import { Alert, Keyboard } from 'react-native'
 
+// constants
+import { textWhite } from 'src/colors'
+
 const Title = styled.Text`
-  color: white;
+  color: ${textWhite};
   text-align: center;
   font-size: 18px;
 `

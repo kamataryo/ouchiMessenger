@@ -38,10 +38,10 @@ export const publish = ({ client }) => ({ message, endpointArns }) => {
       const params = {
         TargetArn,
         Message: JSON.stringify({
-          default: JSON.stringify({ aps: { alert: message } }),
-          APNS: JSON.stringify({ aps: { alert: message } }),
+          default: JSON.stringify({ aps: { alert: message, badge: 1 } }),
+          APNS: JSON.stringify({ aps: { alert: message, badge: 1 } }),
           APNS_SANDBOX: JSON.stringify({
-            aps: { alert: message },
+            aps: { alert: message, badge: 1 },
           }),
         }),
         MessageStructure: 'json',
