@@ -28,6 +28,9 @@ import { putTask } from 'src/api'
 import { createActions as createModalActions } from 'src/reducers/modal'
 import { createActions as createTaskActions } from 'src/reducers/task'
 
+// constants
+import { textWhite } from 'src/colors'
+
 // const BOX_HEIGHT =
 //   67.5 * 3 + // 3 TextInput
 //   111 + // Toggle Switch
@@ -57,7 +60,7 @@ const PickerLine = styled.View`
 `
 
 const SwitchLabel = styled.Text`
-  color: white;
+  color: ${textWhite};
 `
 
 export type OwnProps = {}
@@ -172,7 +175,7 @@ export class TaskModal extends React.Component<Props, State> {
               'title',
               e => e.nativeEvent.text,
             ) }
-            color={ 'white' }
+            color={ textWhite }
             disabled={ !task.title }
           />
           <TextInput
@@ -182,7 +185,7 @@ export class TaskModal extends React.Component<Props, State> {
               'description',
               e => e.nativeEvent.text,
             ) }
-            color={ 'white' }
+            color={ textWhite }
             disabled={ !task.description }
           />
           <SwitchLine>
@@ -193,12 +196,12 @@ export class TaskModal extends React.Component<Props, State> {
             />
           </SwitchLine>
           <PickerLine>
-            <Text style={ { color: 'white', textAlign: 'center' } }>
+            <Text style={ { color: textWhite, textAlign: 'center' } }>
               {'優先度 (1に近いほど上に表示されます)'}
             </Text>
             <Picker
               selectedValue={ task.displayOrder || 10 }
-              itemStyle={ { color: 'white', fontSize: 14 } }
+              itemStyle={ { color: textWhite, fontSize: 14 } }
               onValueChange={ this.createUpdateHandler('displayOrder') }
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(item => (

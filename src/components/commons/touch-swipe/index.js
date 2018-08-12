@@ -113,7 +113,7 @@ export class TouchSwipe extends React.Component<Props, State> {
             backgroundColor: 'red',
           } }
         >
-          <Text style={ { color: 'white' } }>{'right'}</Text>
+          <Text style={ { color: textWhite } }>{'right'}</Text>
         </Animated.View> */}
       </View>
     )
