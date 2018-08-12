@@ -6,10 +6,10 @@ import TextInput from 'src/components/commons/text-input'
 import { Button } from 'react-native'
 import styled from 'styled-components'
 import { createActions as createProfileActions } from 'src/reducers/profile'
-import { updateEndpoint } from 'src/api'
 
 // libs
 import { Alert, Keyboard } from 'react-native'
+import { updateEndpoint, signUp } from 'src/api'
 
 // constants
 import { textWhite } from 'src/colors'
@@ -32,6 +32,17 @@ type State = {
   avoidInitialValidationMessage: boolean,
   editingUsername: string,
   edit: boolean,
+  error: | ''
+    | 'UsernameExistsException'
+    | 'InvalidPasswordException'
+    | 'unknown',
+}
+
+const messages = {
+  UsernameExistsException: 'その名前はすでに登録されています。',
+  InvalidPasswordException:
+    'パスワードには大文字と小文字のアルファベット、数字、記号を含めてください。',
+  unknown: '不明なエラーです。',
 }
 
 export class InitialModal extends React.Component<Props, State> {
@@ -46,6 +57,7 @@ export class InitialModal extends React.Component<Props, State> {
       avoidInitialValidationMessage: true,
       editingUsername: '',
       edit: false,
+      error: '',
     }
   }
 
@@ -68,9 +80,22 @@ export class InitialModal extends React.Component<Props, State> {
 
     const deviceToken = this.props.deviceToken
 
-    updateEndpoint(deviceToken)
-      .then(() => this.props.updateUsername(nextUsername))
-      .catch(() => Alert.alert('通信エラー', 'ごめんね😿'))
+    signUp('username2', 'mugil.cephalus@gmail.com', 'Password123!')
+      .then(console.log)
+      .catch(err => {
+        if (err.code === 'UsernameExistsException') {
+          this.setState({ ...this.state, error: 'UsernameExistsException' })
+        } else if (err.code === 'InvalidPasswordException') {
+          this.setState({ ...this.state, error: 'InvalidPasswordException' })
+        } else {
+          console.error(err)
+          this.setState({ ...this.state, error: 'unknown' })
+        }
+      })
+
+    // updateEndpoint(deviceToken)
+    //   .then(() => this.props.updateUsername(nextUsername))
+    //   .catch(() => Alert.alert('通信エラー', 'ごめんね😿'))
   }
 
   /**
@@ -78,30 +103,42 @@ export class InitialModal extends React.Component<Props, State> {
    * @return {ReactElement|null|false} render a React element.
    */
   render() {
-    const { avoidInitialValidationMessage, editingUsername, edit } = this.state
+    const { editingUsername, error } = this.state
     const { username } = this.props
 
     const displayUsername = editingUsername || username
 
     return (
-      <Modal isVisible={ !username }>
-        <Title>{'お名前を教えてください'}</Title>
+      <Modal isVisible={ true || !username }>
+        <Title>{'ユーザー登録'}</Title>
         <TextInput
           onFocus={ this.onFocus }
           onChange={ this.onChange }
           value={ displayUsername }
-          label={ 'お名前' }
+          label={ 'メールアドレス' }
+          // validationMessage={ error === 'UsernameExistsException' && messages[error] }
+        />
+
+        <TextInput
+          onFocus={ this.onFocus }
+          onChange={ this.onChange }
+          value={ displayUsername }
+          label={ 'ユーザー名' }
           validationMessage={
-            avoidInitialValidationMessage || !edit || editingUsername !== ''
-              ? false
-              : '正しい名前を入力してください'
+            error === 'UsernameExistsException' && messages[error]
           }
         />
-        <Button
-          onPress={ this.onPress }
-          title={ 'OK' }
-          disabled={ !editingUsername || editingUsername === username }
+        <TextInput
+          onFocus={ this.onFocus }
+          onChange={ this.onChange }
+          value={ displayUsername }
+          label={ 'パスワード' }
+          validationMessage={
+            error === 'InvalidPasswordException' && messages[error]
+          }
         />
+
+        <Button onPress={ this.onPress } title={ 'OK' } />
       </Modal>
     )
   }
