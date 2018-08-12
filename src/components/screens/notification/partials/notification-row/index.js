@@ -36,16 +36,17 @@ export const NotificationRow = (props: OwnProps) => {
   return (
     <FlexBothSide>
       <FlexRow>
-        {type === 'complete' && (
-          <Ionicons
-            name={ read ? 'ios-heart' : 'ios-heart-outline' }
-            size={ 26 }
-            style={ { padding: 15, color: read ? 'red' : void 0 } }
-            onPress={ read ? void 0 : favMe }
-          />
-        )}
+        <Ionicons
+          name={ read || type === 'fav' ? 'ios-heart' : 'ios-heart-outline' }
+          size={ 26 }
+          style={ {
+            padding: 15,
+            color: read || type === 'fav' ? 'red' : void 0,
+          } }
+          onPress={ read || type === 'fav' ? void 0 : favMe }
+        />
         <FlexCol>
-          <Title numberOfLines={ type === 'fav' ? 2 : 1 } ellipsizeMode={ 'tail' }>
+          <Title numberOfLines={ 1 } ellipsizeMode={ 'tail' }>
             {title}
           </Title>
           {type === 'complete' && (
