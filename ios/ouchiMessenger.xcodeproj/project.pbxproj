@@ -1169,6 +1169,7 @@
 				PRODUCT_NAME = ouchiMessenger;
 				PROVISIONING_PROFILE = "cdaa3662-7808-4d95-9d1c-35f2123010eb";
 				PROVISIONING_PROFILE_SPECIFIER = "ouchiMessenger Provisioning Profile";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1201,6 +1202,7 @@
 				PRODUCT_NAME = ouchiMessenger;
 				PROVISIONING_PROFILE = "707692a1-b4cf-42e3-b47a-d08cbbde2653";
 				PROVISIONING_PROFILE_SPECIFIER = "ouchiMessenger production provisioning profile";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
