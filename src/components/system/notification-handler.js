@@ -36,9 +36,11 @@ export class NotificationHandler extends React.Component<Props> {
       },
 
       onNotification: notification => {
-        const currentBadgeNumber = this.props.notifications.length
-        PushNotification.setApplicationIconBadgeNumber(currentBadgeNumber + 1)
-        this.props.addNotification(notification.message)
+        if (notification.foreground) {
+          const currentBadgeNumber = this.props.notifications.length
+          PushNotification.setApplicationIconBadgeNumber(currentBadgeNumber + 1)
+          this.props.addNotification(notification.message)
+        }
         notification.finish(PushNotificationIOS.FetchResult.NoData)
       },
       // senderID: 'YOUR GCM (OR FCM) SENDER ID',
@@ -89,15 +91,18 @@ export class NotificationHandler extends React.Component<Props> {
     AppState.removeEventListener('change', this.handleAppStateChange)
   }
 
-  handleAppStateChange = (nextState: string) =>
-    nextState === 'active' &&
-    PushNotificationIOS.getDeliveredNotifications(
-      notifications =>
-        notifications &&
-        notifications.forEach(({ userInfo }) =>
-          this.props.addNotification(userInfo.aps.alert),
-        ),
-    )
+  handleAppStateChange = (nextState: string) => {
+    if (nextState === 'active') {
+      PushNotificationIOS.getDeliveredNotifications(
+        notifications =>
+          notifications &&
+          notifications.forEach(({ userInfo }) =>
+            this.props.addNotification(userInfo.aps.alert),
+          ),
+      )
+      PushNotificationIOS.removeAllDeliveredNotifications()
+    }
+  }
 
   /**
    * render
