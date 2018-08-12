@@ -17,7 +17,7 @@ import { createNotificationRightButtons } from 'src/components/commons/swipe-but
 
 // libs
 import { Alert } from 'react-native'
-import { listEndpointArns, publish } from 'src/api'
+import { publish } from 'src/api'
 
 // constants
 import { BOTTOM_TAB_NAVIGATION_HEIGHT } from '../'
@@ -34,7 +34,6 @@ const TextLine = styled.Text`
 type Props = {
   // StateProps
   notifications: Notification[],
-  deviceToken: string,
   username: string,
   // dispatchProps
   removeNotification: (index: number) => void,
@@ -103,29 +102,19 @@ export class TaskScreen extends React.Component<Props, State> {
   )
 
   requestFav = (index: number) => {
-    const {
-      deviceToken,
-      username,
-      // notifications,
-    } = this.props
-    // TODO: limit fav receiving user by props below.
-    // const { notifiersEndpointArn } = notifications[index]
+    const { username, notifications } = this.props
+    const { whoseArn, taskTitle } = notifications[index].data
 
     const message = {
       type: 'fav',
-      title: `❤️「${username}」さんから感謝が届きました！`,
+      title: `❤️「${username}」さんから「${taskTitle}」についての感謝が届きました！`,
       data: { username },
     }
 
-    listEndpointArns()
-      .then(data =>
-        publish({
-          message,
-          endpointArns: data
-            .filter(e => e.Attributes.Token !== deviceToken)
-            .map(e => e.EndpointArn),
-        }),
-      )
+    publish({
+      message,
+      endpointArns: [whoseArn],
+    })
       .then(() => this.props.favNotification(index))
       .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
   }
@@ -227,7 +216,6 @@ export class TaskScreen extends React.Component<Props, State> {
 const mapStateToProps = state => {
   return {
     notifications: state.notification.data,
-    deviceToken: state.notification.deviceToken,
     username: state.profile.username,
   }
 }

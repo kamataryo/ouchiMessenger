@@ -131,24 +131,37 @@ export class Tasks extends React.Component<Props, State> {
       }
 
       const { deviceToken } = this.props
-      const message = {
-        type: 'complete',
-        title: `「${task.title}」が完了しました！`,
-        data: { taskId: task.taskId, updatedBy, updatedAt },
-        // TODO: contain users endpointArn as notifiersEndpointArn
-      }
 
       return putTask(nextTaskProps)
         .then(() => this.props.toggleTask(index, updatedAt, updatedBy))
         .then(() => (nextTaskProps.done ? listEndpointArns() : []))
-        .then(data =>
-          publish({
+        .then(data => {
+          // skip
+          if (data.length === 0) {
+            return
+          }
+          const { EndpointArn: myEndpointArn } = data.find(
+            e => e.Attributes.Token === deviceToken,
+          )
+          const message = {
+            type: 'complete',
+            title: `「${task.title}」が完了しました！`,
+            data: {
+              taskId: task.taskId,
+              updatedBy,
+              updatedAt,
+              taskTitle: task.title,
+              whoseArn: myEndpointArn, // embed endpoint for reply
+            },
+            // TODO: contain users endpointArn as notifiersEndpointArn
+          }
+          return publish({
             message,
             endpointArns: data
               .filter(e => e.Attributes.Token !== deviceToken)
               .map(e => e.EndpointArn),
-          }),
-        )
+          })
+        })
         .catch(() => Alert.alert('通信エラー', 'ごめんだにゃん 😹'))
     },
 
