@@ -36,13 +36,7 @@ export const NotificationRow = (props: OwnProps) => {
   return (
     <FlexBothSide>
       <FlexRow>
-        {type === 'fav' ? (
-          <Ionicons
-            name={ 'ios-heart-outline' }
-            size={ 26 }
-            style={ { padding: 15, color: 'transparent' } }
-          />
-        ) : (
+        {type === 'complete' && (
           <Ionicons
             name={ read ? 'ios-heart' : 'ios-heart-outline' }
             size={ 26 }
@@ -51,10 +45,10 @@ export const NotificationRow = (props: OwnProps) => {
           />
         )}
         <FlexCol>
-          <Title numberOfLines={ 1 } ellipsizeMode={ 'tail' }>
+          <Title numberOfLines={ type === 'fav' ? 2 : 1 } ellipsizeMode={ 'tail' }>
             {title}
           </Title>
-          {type !== 'fav' && (
+          {type === 'complete' && (
             <Description numberOfLines={ 1 } ellipsizeMode={ 'tail' }>
               {description}
             </Description>
