@@ -1,6 +1,6 @@
 {
   "name": "ouchiMessenger",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "devDependencies": {
     "babel-eslint": "^8.2.6",
     "babel-preset-flow": "^6.23.0",
