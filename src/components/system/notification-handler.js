@@ -94,8 +94,8 @@ export class NotificationHandler extends React.Component<Props> {
     PushNotificationIOS.getDeliveredNotifications(
       notifications =>
         notifications &&
-        notifications.forEach(notification =>
-          this.props.addNotification(notification),
+        notifications.forEach(({ userInfo }) =>
+          this.props.addNotification(userInfo.aps.alert),
         ),
     )
 
