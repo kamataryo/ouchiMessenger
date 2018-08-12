@@ -20,7 +20,7 @@ import TaskModal from '../task-modal'
 // libs
 import { createActions as createModalActions } from 'src/reducers/modal'
 import { createActions as createTaskActions } from 'src/reducers/task'
-import { Alert } from 'react-native'
+import { Alert, AppState } from 'react-native'
 
 // APIs
 import { putTask, getTasks, removeTask } from 'src/api'
@@ -64,21 +64,39 @@ export class Tasks extends React.Component<Props, State> {
    * componentWillMount
    * @return {void}
    */
-  componentDidMount = () => this.onRefresh(false)
+  componentDidMount() {
+    this.onRefresh(false)
+    AppState.addEventListener('change', this.handleAppStateChange)
+  }
 
   shouldComponentUpdate = () => true
 
-  onRefresh = (showDialog: boolean = true) => {
-    showDialog && this.setState({ ...this.state, refreshing: true })
+  /**
+   * componentWillUnmount
+   * @return {void}
+   */
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange)
+  }
+
+  handleAppStateChange = (nextAppState: string) => {
+    if (nextAppState === 'active') {
+      this.onRefresh(false)
+    }
+  }
+
+  onRefresh = (showLoading: boolean = true) => {
+    console.log('staret')
+    this.setState({ ...this.state, refreshing: showLoading })
 
     getTasks()
       .then((tasks: Task[]) => {
         this.props.updateTasks(tasks)
-        showDialog && this.setState({ ...this.state, refreshing: false })
+        this.setState({ ...this.state, refreshing: false })
       })
       .catch(() => {
-        showDialog && Alert.alert('通信エラー', 'ごめんだにゃん 😹')
-        showDialog && this.setState({ ...this.state, refreshing: false })
+        Alert.alert('通信エラー', 'ごめんだにゃん 😹')
+        this.setState({ ...this.state, refreshing: false })
       })
   }
 
@@ -149,6 +167,7 @@ export class Tasks extends React.Component<Props, State> {
         { text: 'キャンセル' },
       ])
     },
+
     openModal: (task: Task, index: number) => () =>
       this.props.openModal(task, index),
   }
@@ -185,7 +204,7 @@ export class Tasks extends React.Component<Props, State> {
           refreshControl={
             <RefreshControl
               refreshing={ refreshing }
-              onRefresh={ this.onRefresh }
+              onRefresh={ () => this.onRefresh(true) }
             />
           }
           data={ sortingList }
