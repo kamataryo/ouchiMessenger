@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { createActions as createNotificationActions } from 'src/reducers/notification'
 
 import PushNotification from 'react-native-push-notification'
-import { PushNotificationIOS } from 'react-native'
+import { PushNotificationIOS, AppState } from 'react-native'
 /* eslint-disable import/default */
 // $FlowFixMe
 import DeviceInfo from 'react-native-device-info'
@@ -54,6 +54,9 @@ export class NotificationHandler extends React.Component<Props> {
     if (DeviceInfo.isEmulator()) {
       this.props.updateDeviceToken(DUMMY_ACCESS_TOKEN)
     }
+
+    // set handler to process notifications reached when app is in background
+    AppState.addEventListener('change', this.handleAppStateChange)
   }
 
   /**
@@ -77,6 +80,24 @@ export class NotificationHandler extends React.Component<Props> {
     const currentBadgeNumber = this.props.notifications.length
     PushNotification.setApplicationIconBadgeNumber(currentBadgeNumber)
   }
+
+  /**
+   * componentWillUnmount
+   * @return {void}
+   */
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange)
+  }
+
+  handleAppStateChange = (nextState: string) =>
+    nextState === 'active' &&
+    PushNotificationIOS.getDeliveredNotifications(
+      notifications =>
+        notifications &&
+        notifications.forEach(notification =>
+          this.props.addNotification(notification),
+        ),
+    )
 
   /**
    * render
