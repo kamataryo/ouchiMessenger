@@ -1,6 +1,7 @@
 import {
   CognitoUserPool,
   CognitoUserAttribute,
+  CognitoUser,
 } from 'amazon-cognito-identity-js'
 
 export const signUp = poolData => (username, email, password) => {
@@ -17,8 +18,25 @@ export const signUp = poolData => (username, email, password) => {
         reject(err)
       }
       const cognitoUser = result.user
-      console.log(cognitoUser)
       resolve(cognitoUser)
+    })
+  })
+}
+
+export const verify = poolData => (username, code) => {
+  const userData = {
+    Username: username,
+    Pool: new CognitoUserPool(poolData),
+  }
+  const cognitoUser = new CognitoUser(userData)
+
+  return new Promise((resolve, reject) => {
+    cognitoUser.confirmRegistration(code, true, (err, result) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
     })
   })
 }

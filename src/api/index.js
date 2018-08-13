@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk'
 import credentials from '../../.env'
 
-import { signUp as cognitoSignUp } from './aws/cognito'
+import { signUp as cognitoSignUp, verify as cognitoVerify } from './aws/cognito'
 
 import {
   getTasks as dynamoGetTasks,
@@ -51,3 +51,4 @@ export const listEndpointArns = snsListEndpointArns(snsOptions)
 export const publish = snsPublish(snsOptions)
 
 export const signUp = cognitoSignUp(poolData)
+export const verify = cognitoVerify(poolData)
