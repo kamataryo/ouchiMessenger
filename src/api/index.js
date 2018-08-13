@@ -1,7 +1,11 @@
 import AWS from 'aws-sdk'
 import credentials from '../../.env'
 
-import { signUp as cognitoSignUp, verify as cognitoVerify } from './aws/cognito'
+import {
+  signUp as cognitoSignUp,
+  verify as cognitoVerify,
+  login as cognitoLogin,
+} from './aws/cognito'
 
 import {
   getTasks as dynamoGetTasks,
@@ -40,7 +44,7 @@ const snsClient = new AWS.SNS({ region })
 const taskOptions = { TableName, client: dynamoClient }
 const snsOptions = { PlatformApplicationArn, client: snsClient }
 
-const poolData = { UserPoolId, ClientId }
+const cognitoOptions = { poolData: { UserPoolId, ClientId } }
 
 export const getTasks = dynamoGetTasks(taskOptions)
 export const putTask = dynamoPutTask(taskOptions)
@@ -50,5 +54,6 @@ export const updateEndpoint = snsUpdateEndpoint(snsOptions)
 export const listEndpointArns = snsListEndpointArns(snsOptions)
 export const publish = snsPublish(snsOptions)
 
-export const signUp = cognitoSignUp(poolData)
-export const verify = cognitoVerify(poolData)
+export const signUp = cognitoSignUp(cognitoOptions)
+export const verify = cognitoVerify(cognitoOptions)
+export const login = cognitoLogin(cognitoOptions)
