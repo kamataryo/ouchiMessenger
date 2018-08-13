@@ -1,61 +1,47 @@
-# OUCHI MESSENGER
+# monorepo
 
-[![Build Status](https://travis-ci.org/kamataryo/ouchiMessenger.svg?branch=master)](https://travis-ci.org/kamataryo/ouchiMessenger)
+prefix: `@ouch-messenger`
 
-Family task management application.
+## client apps
 
-![Task List](./raw/screenshots/01_task-list.png)
+| package name | desciption        |
+| ------------ | ----------------- |
+| mobile       | React Native App. |
+| pwa          | Browser App.      |
 
-![Add task](./raw/screenshots/02_add-task.png)
+## User identification and Authentication
 
-## Architecture
+| package name   | backend service | description                                    |
+| :------------- | :-------------- | :--------------------------------------------- |
+| amazon-cognito | Amazon Cognito  | Provide user identification and authentication |
 
-```
- [Amazon Cognito]───(3)───┐
-        ^                    │
-        │                    │
-       (1)                   │
-        │                    │
-        v                    v
-[iOS Application] <-(2)-> [AWS Lambda] <-(4)-> [Amazon DynamoDB]
-        ^                     │
-        │                     │
-        │                     │
-  [Amazon SNS]<─(5)───────┘
-```
+## API
 
-(1): Request authentication
-(2): Request
-(3): security control
-(4): DB Access
-(5): Request Push Notification
+| package name       | backend service | description       |
+| :----------------- | :-------------- | :---------------- |
+| amazon-api-gateway | Amazon Cognito  | Handle api access |
 
-## Build and Deploy
+## api backends
 
-### IAM
+| package name               | method | endpoint          | backend service       | description                           |
+| :------------------------- | :----- | :---------------- | :-------------------- | :------------------------------------ |
+| aws-lambda-post-endpoint   | POST   | /endpoint         | Amazon SNS            | update SNS endpoint                   |
+| aws-lambda-delete-endpoint | DELETE | /endpoint         | Amazon SNS            | delete SNS endpoint                   |
+| aws-lambda-get-tasks       | GET    | /tasks            | Amazon DynamoDB       | scan all tasks                        |
+| aws-lambda-recycle-tasks   | PUT    | /tasks?batch=true | Amazon DynamoDB       | Recycle tasks                         |
+| aws-lambda-put-task        | PUT    | /task             | Amazon SNS / DynamoDB | Update a task. if done, broadcast it  |
+| aws-lambda-delete-task     | DELETE | /task             | Amazon DynamoDB       | Delete a task                         |
+| aws-lambda-fav             | POST   | /fav              | Amazon SNS            | Fav one's task completion performance |
 
-- create User with policy about SNS and DynamoDB Access describing below.
+## database
 
-### SNS setting
+| package name    | backend service | description |
+| :-------------- | :-------------- | :---------- |
+| amazon-dynamodb | Amazon DynamoDB | Store data  |
 
-- create Platform Application
-- Note ARN
+## Push delivery
 
-### Database setting
-
-1.  Set up 1 DynamoDB table with key named `taskId`
-2.  Note the table name, the access key id and the secret access key.
-
-### batch setting
-
-The batch reset task done/undone state.
-
-1.  Create a lambda role with DynamoDB access.
-2.  Create a lambda function with `/src/api/lambda.js` with environmental variables, `TABLE_NAME` and `REGION`.
-3.  Set CloudWatch Events cron trigger for batch.
-
-### app build (iOS only so far)
-
-1.  `$ cp .env.sample.js .env.js`
-2.  Edit the AWS credential with information above.
-3.  Build and deploy from xcode.
+| package name           | backend service | description         |
+| :--------------------- | :-------------- | :------------------ |
+| amazon-sns-production  | Amazon SNS      | Delivery push       |
+| amazon-sns-development | Amazon SNS      | Delivery push (dev) |

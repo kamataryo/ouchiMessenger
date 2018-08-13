@@ -1,4 +1,15 @@
-### https://raw.github.com/github/gitignore/68ae2ff9f7ce0176696966539b9807525002893b/Node.gitignore
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# expo
+.expo/
+
+# misc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# https://raw.github.com/github/gitignore/68ae2ff9f7ce0176696966539b9807525002893b/Node.gitignore
 
 # Logs
 logs
@@ -62,4 +73,21 @@ typings/
 # next.js build output
 .next
 
+# flow
+flow-typed/
 
+# secret
+.env.js
+secrets/
+
+# Mac
+.DS_Store
+
+# XCode
+UserInterfaceState.xcuserstate
+project.xcworkspace/
+xcuserdata/
+build/
+
+# jest
+.jestcache
