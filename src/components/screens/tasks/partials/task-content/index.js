@@ -86,7 +86,6 @@ export class Tasks extends React.Component<Props, State> {
   }
 
   onRefresh = (showLoading: boolean = true) => {
-    console.log('staret')
     this.setState({ ...this.state, refreshing: showLoading })
 
     getTasks()

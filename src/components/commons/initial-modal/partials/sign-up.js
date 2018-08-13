@@ -1,37 +1,29 @@
 // @flow
 import React from 'react'
 import { connect } from 'react-redux'
-import Modal from 'react-native-modal'
 import TextInput from 'src/components/commons/text-input'
-import { Button } from 'react-native'
-import styled from 'styled-components'
+import { Button, View } from 'react-native'
 import { createActions as createProfileActions } from 'src/reducers/profile'
+import { Title } from '../styled'
 
 // libs
 import { Alert, Keyboard } from 'react-native'
 import { updateEndpoint, signUp } from 'src/api'
-
-// constants
-import { textWhite } from 'src/colors'
-
-const Title = styled.Text`
-  color: ${textWhite};
-  text-align: center;
-  font-size: 18px;
-`
+import * as Keychain from 'react-native-keychain'
 
 type Props = {
+  // ownProps
+  next: () => void,
   // stateProps
-  username: string,
   deviceToken: string,
   // dispatchProps
   updateUsername: (username: string) => void,
 }
 
 type State = {
-  avoidInitialValidationMessage: boolean,
-  editingUsername: string,
-  edit: boolean,
+  email: string,
+  username: string,
+  password: string,
   error: | ''
     | 'UsernameExistsException'
     | 'InvalidPasswordException'
@@ -39,13 +31,24 @@ type State = {
 }
 
 const messages = {
-  UsernameExistsException: 'その名前はすでに登録されています。',
+  UsernameExistsException: 'そのユーザー名はすでに使用されています。',
   InvalidPasswordException:
-    'パスワードには大文字と小文字のアルファベット、数字、記号を含めてください。',
+    'パスワードは8文字以上を設定し、大文字と小文字のアルファベット、数字、記号の全てを含めてください。',
   unknown: '不明なエラーです。',
+  '': '',
 }
 
-export class InitialModal extends React.Component<Props, State> {
+export class SignUp extends React.Component<Props, State> {
+  static isEmailValid = (email: string) =>
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+      email,
+    )
+
+  static isUsernameValid = (username: string) => username.length > 0
+
+  static isPasswordValid = (password: string) =>
+    /^(?=.*?[a-z])(?=.*?\d)(?=.*?[!-/:-@[-`{-~])[!-~]{8,100}$/i.test(password)
+
   /**
    * constructor
    * @param  {object} props React props.
@@ -54,34 +57,31 @@ export class InitialModal extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      avoidInitialValidationMessage: true,
-      editingUsername: '',
-      edit: false,
+      email: '',
+      username: '',
+      password: '',
       error: '',
     }
   }
 
-  onFocus = () => {
-    const { username } = this.props
-    this.setState({ ...this.state, editingUsername: username, edit: true })
+  createChangeHandler = (key: string) => (e: any) => {
+    const value = e.nativeEvent.text
+    this.setState({ ...this.state, [key]: value })
   }
-
-  onChange = (e: any) =>
-    this.setState({
-      ...this.state,
-      editingUsername: e.nativeEvent.text,
-      avoidInitialValidationMessage: false,
-    })
 
   onPress = () => {
     Keyboard.dismiss()
-    const nextUsername = this.state.editingUsername
-    this.setState({ ...this.state, editingUsername: '', edit: false })
+    this.setState({ ...this.state, error: '' })
+    const { email, username, password } = this.state
 
-    const deviceToken = this.props.deviceToken
+    // const deviceToken = this.props.deviceToken
 
-    signUp('username2', 'mugil.cephalus@gmail.com', 'Password123!')
-      .then(console.log)
+    signUp(username, email, password)
+      .then(() => {
+        this.props.updateUsername(username)
+        return Keychain.setGenericPassword(username, password)
+      })
+      .then(this.props.next)
       .catch(err => {
         if (err.code === 'UsernameExistsException') {
           this.setState({ ...this.state, error: 'UsernameExistsException' })
@@ -103,43 +103,48 @@ export class InitialModal extends React.Component<Props, State> {
    * @return {ReactElement|null|false} render a React element.
    */
   render() {
-    const { editingUsername, error } = this.state
-    const { username } = this.props
+    const { email, username, password, error } = this.state
 
-    const displayUsername = editingUsername || username
+    const isEmailValid = SignUp.isEmailValid(email)
+    const isUsernameValid = SignUp.isUsernameValid(username)
+    const isPasswordValid = SignUp.isPasswordValid(password)
+
+    const ok = isEmailValid || isUsernameValid || isPasswordValid
 
     return (
-      <Modal isVisible={ true || !username }>
+      <View>
         <Title>{'ユーザー登録'}</Title>
         <TextInput
-          onFocus={ this.onFocus }
-          onChange={ this.onChange }
-          value={ displayUsername }
+          onChange={ this.createChangeHandler('email') }
+          value={ email }
           label={ 'メールアドレス' }
-          // validationMessage={ error === 'UsernameExistsException' && messages[error] }
+          keyboardType={ 'email-address' }
+          validationMessage={
+            !isEmailValid && '正しいメールアドレスを入力してください。'
+          }
         />
 
         <TextInput
-          onFocus={ this.onFocus }
-          onChange={ this.onChange }
-          value={ displayUsername }
+          onChange={ this.createChangeHandler('username') }
+          value={ username }
           label={ 'ユーザー名' }
           validationMessage={
             error === 'UsernameExistsException' && messages[error]
           }
         />
         <TextInput
-          onFocus={ this.onFocus }
-          onChange={ this.onChange }
-          value={ displayUsername }
+          onChange={ this.createChangeHandler('password') }
+          value={ password }
           label={ 'パスワード' }
+          secureTextEntry
           validationMessage={
-            error === 'InvalidPasswordException' && messages[error]
+            (error === 'InvalidPasswordException' || !isPasswordValid) &&
+            messages[error]
           }
         />
 
-        <Button onPress={ this.onPress } title={ 'OK' } />
-      </Modal>
+        <Button onPress={ this.onPress } title={ 'OK' } disabled={ !ok } />
+      </View>
     )
   }
 }
@@ -152,7 +157,6 @@ export class InitialModal extends React.Component<Props, State> {
  */
 const mapStateToProps = state => {
   return {
-    username: state.profile.username,
     deviceToken: state.notification.deviceToken,
   }
 }
@@ -173,4 +177,4 @@ const mapDispatchToProps = (dispatch: any) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(InitialModal)
+)(SignUp)

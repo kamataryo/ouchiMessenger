@@ -46,6 +46,7 @@
     "react-native": "~0.55.3",
     "react-native-device-info": "^0.22.2",
     "react-native-elements": "^0.19.1",
+    "react-native-keychain": "^3.0.0",
     "react-native-modal": "^6.5.0",
     "react-native-push-notification": "^3.0.2",
     "react-native-swipeable": "^0.6.0",
