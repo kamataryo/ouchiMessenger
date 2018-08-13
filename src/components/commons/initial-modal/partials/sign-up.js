@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import TextInput from 'src/components/commons/text-input'
 import { Button, View } from 'react-native'
 import { createActions as createProfileActions } from 'src/reducers/profile'
-import { Title } from '../styled'
+import { Title, TransitionButton } from '../styled'
 
 // libs
 import { Alert, Keyboard } from 'react-native'
@@ -13,7 +13,8 @@ import * as Keychain from 'react-native-keychain'
 
 type Props = {
   // ownProps
-  next: () => void,
+  toLogin: () => void,
+  toVerify: () => void,
   // stateProps
   deviceToken: string,
   // dispatchProps
@@ -64,6 +65,15 @@ export class SignUp extends React.Component<Props, State> {
     }
   }
 
+  componentDidMount() {
+    Keychain.getGenericPassword().then(credentials => {
+      if (credentials) {
+        const { username, password } = credentials
+        this.setState({ ...this.state, username, password })
+      }
+    })
+  }
+
   createChangeHandler = (key: string) => (e: any) => {
     const value = e.nativeEvent.text
     this.setState({ ...this.state, [key]: value })
@@ -81,14 +91,14 @@ export class SignUp extends React.Component<Props, State> {
         this.props.updateUsername(username)
         return Keychain.setGenericPassword(username, password)
       })
-      .then(this.props.next)
+      .then(this.props.toVerify)
       .catch(err => {
         if (err.code === 'UsernameExistsException') {
           this.setState({ ...this.state, error: 'UsernameExistsException' })
         } else if (err.code === 'InvalidPasswordException') {
           this.setState({ ...this.state, error: 'InvalidPasswordException' })
         } else {
-          console.error(err)
+          () => Alert.alert('不明なエラー', 'ごめんだにゃん 😹')
           this.setState({ ...this.state, error: 'unknown' })
         }
       })
@@ -144,6 +154,11 @@ export class SignUp extends React.Component<Props, State> {
         />
 
         <Button onPress={ this.onPress } title={ 'OK' } disabled={ !ok } />
+
+        <TransitionButton
+          onPress={ this.props.toLogin }
+          title={ '既存のユーザーでログイン' }
+        />
       </View>
     )
   }

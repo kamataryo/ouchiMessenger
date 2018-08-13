@@ -10,6 +10,7 @@ import styled from 'styled-components'
 import TextInput from 'src/components/commons/text-input'
 import { Header } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { Button } from 'react-native'
 // import LottieView from 'lottie-react-native'
 
 // HOCs
@@ -35,12 +36,17 @@ const TextLine = styled.Text`
   color: ${textGray};
 `
 
+export const ButtonMargin = styled.View`
+  margin: 20px;
+`
+
 type Props = {
   // stateProps
   username: string,
   deviceToken: string,
   // dispatchProps
   updateUsername: (username: string) => void,
+  openInitialModal: () => void,
 }
 
 type State = {
@@ -94,7 +100,7 @@ export class Profile extends React.Component<Props, State> {
   onChange = (e: any) =>
     this.setState({ ...this.state, editingUsername: e.nativeEvent.text })
 
-  onPress = () => {
+  onCheckPress = () => {
     Keyboard.dismiss()
     const nextUsername = this.state.editingUsername
     this.setState({ ...this.state, editingUsername: '', edit: false })
@@ -106,6 +112,12 @@ export class Profile extends React.Component<Props, State> {
       .catch(() => {
         Alert.alert('通信エラー', 'ごめんね😿')
       })
+  }
+
+  onLogoutPress = () => {
+    // TODO: clean local store before logout
+    // TODO: Delete SNS endpoint before logout
+    this.props.openInitialModal()
   }
 
   /**
@@ -143,7 +155,7 @@ export class Profile extends React.Component<Props, State> {
                 name={ 'ios-checkmark' }
                 size={ headerIcons.right.size }
                 style={ headerIcons.right.style }
-                onPress={ this.onPress }
+                onPress={ this.onCheckPress }
               />
             ) : (
               void 0
@@ -167,6 +179,9 @@ export class Profile extends React.Component<Props, State> {
           loop
         /> */}
         <TextLine>{'☀️タスクは毎朝3:00にリセットされます。'}</TextLine>
+        <ButtonMargin>
+          <Button title={ 'ログアウト' } onPress={ this.onLogoutPress } />
+        </ButtonMargin>
       </ProfileBackground>
     )
   }
@@ -189,6 +204,8 @@ const mapDispatchProps = (dispatch: any) => {
   return {
     updateUsername: username =>
       dispatch(createProfileActions.updateUsername(username)),
+    openInitialModal: () =>
+      dispatch(createProfileActions.toggleInitialModalVisibility(true)),
   }
 }
 

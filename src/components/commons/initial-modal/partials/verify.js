@@ -2,7 +2,8 @@
 
 export type Props = {
   // ownProps
-  next: () => void,
+  toSignUp: () => void,
+  closeMe: () => void,
   // stateProps
   username: string,
 }
@@ -15,7 +16,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 // components
-import { Title, Welcome } from '../styled'
+import { Title, Welcome, TransitionButton } from '../styled'
 import { View, Button } from 'react-native'
 import TextInput from 'src/components/commons/text-input'
 
@@ -55,7 +56,7 @@ export class Verify extends React.Component<Props, State> {
 
     Keyboard.dismiss()
     verify(username, code)
-      .then(this.props.next)
+      .then(this.props.closeMe)
       .catch(console.error)
   }
 
@@ -79,6 +80,7 @@ export class Verify extends React.Component<Props, State> {
           keyboardType={ 'number-pad' }
         />
         <Button onPress={ this.onPress } title={ 'OK' } disabled={ !isValid } />
+        <TransitionButton onPress={ this.props.toSignUp } title={ '戻る' } />
       </View>
     )
   }

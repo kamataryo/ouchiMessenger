@@ -1,16 +1,32 @@
 // @flow
 
+import type { StoreState } from 'src/types/store'
+
 import React from 'react'
+import { connect } from 'react-redux'
+import { View } from 'react-native'
 import Modal from 'react-native-modal'
 import SignUp from './partials/sign-up'
 import Verify from './partials/verify'
+import Login from './partials/login'
 import * as Keychain from 'react-native-keychain'
+import { createActions as createProfileActions } from 'src/reducers/profile'
 
-type Props = {}
+type Props = {
+  // stateProps
+  isVisible: boolean,
+  // dispatchProps
+  closeInitialModal: () => void,
+}
+
+type Mode = 'sign-up' | 'login' | 'verify' | 'none'
 
 type State = {
-  step: number,
-  isVisible: boolean,
+  mode: Mode,
+  credentials: {
+    password: string,
+    username: string,
+  },
 }
 
 export class InitialModal extends React.Component<Props, State> {
@@ -22,8 +38,11 @@ export class InitialModal extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      step: 0,
-      isVisible: false, // TODO: handle with keychain
+      mode: 'none',
+      credentials: {
+        password: '',
+        username: '',
+      },
     }
   }
 
@@ -33,8 +52,10 @@ export class InitialModal extends React.Component<Props, State> {
    */
   componentDidMount() {
     Keychain.getGenericPassword().then(credentials => {
-      if (!credentials) {
-        this.setState({ ...this.state, isVisible: true })
+      if (credentials) {
+        this.setState({ ...this.state, mode: 'login', credentials })
+      } else {
+        this.setState({ ...this.state, mode: 'sign-up' })
       }
     })
   }
@@ -47,30 +68,40 @@ export class InitialModal extends React.Component<Props, State> {
    */
   shouldComponentUpdate(nextProps: Props, nextState: State) {
     return (
-      this.state.step !== nextState.step ||
-      this.state.isVisible !== nextState.isVisible
+      this.state.mode !== nextState.mode ||
+      this.props.isVisible !== nextProps.isVisible
     )
   }
 
-  next = () => {
-    if (this.state.step === 1) {
-      this.setState({ ...this.state, isVisible: false })
-    } else {
-      this.setState({ ...this.state, step: this.state.step + 1 })
-    }
-  }
+  toggleMode = (mode: Mode) => this.setState({ ...this.state, mode })
 
-  prev = () => {
-    if (this.state.step > 0) {
-      this.setState({ ...this.state, step: this.state.step - 1 })
-    }
-  }
+  toSignUp = () => this.toggleMode('sign-up')
+  toLogin = () => this.toggleMode('login')
+  toVerify = () => this.toggleMode('verify')
 
-  renderItem = (index: number) => {
-    if (index === 0) {
-      return <SignUp next={ this.next } />
+  renderItem = (mode: Mode) => {
+    const { credentials } = this.state
+    if (mode === 'none') {
+      return <View />
+    } else if (mode === 'sign-up') {
+      return <SignUp toLogin={ this.toLogin } toVerify={ this.toVerify } />
+    } else if (mode === 'verify') {
+      return (
+        <Verify
+          toSignUp={ this.toSignUp }
+          closeMe={ this.props.closeInitialModal }
+        />
+      )
+    } else if (mode === 'login') {
+      return (
+        <Login
+          toSignUp={ this.toSignUp }
+          credentials={ credentials }
+          closeMe={ this.props.closeInitialModal }
+        />
+      )
     } else {
-      return <Verify next={ this.next } />
+      return <View />
     }
   }
 
@@ -79,9 +110,39 @@ export class InitialModal extends React.Component<Props, State> {
    * @return {ReactElement|null|false} render a React element.
    */
   render() {
-    const { step, isVisible } = this.state
-    return <Modal isVisible={ isVisible }>{this.renderItem(step)}</Modal>
+    const { isVisible } = this.props
+    const { mode } = this.state
+    return <Modal isVisible={ isVisible }>{this.renderItem(mode)}</Modal>
   }
 }
 
-export default InitialModal
+/**
+ * map state to props
+ * @param  {object} state    state tree
+ * @param  {object} ownProps own props
+ * @return {object}          state props
+ */
+const mapStateToProps = (state: StoreState) => {
+  console.log(state.profile.isInitialModalVisible)
+  return {
+    isVisible: state.profile.isInitialModalVisible,
+  }
+}
+
+/**
+ * map dispatch to props
+ * @param  {function} dispatch dispatcher
+ * @param  {object}   ownProps own props
+ * @return {object}            dispatch props
+ */
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    closeInitialModal: () =>
+      dispatch(createProfileActions.toggleInitialModalVisibility(false)),
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(InitialModal)
