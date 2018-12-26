@@ -4,10 +4,11 @@ prefix: `@ouch-messenger`
 
 ## client apps
 
-| package name | desciption        |
-| ------------ | ----------------- |
-| mobile       | React Native App. |
-| pwa          | Browser App.      |
+| package name         | Frameworks            | desciption                |
+| -------------------- | --------------------- | ------------------------- |
+| mobile               | React Native          | Application view          |
+| pwa                  | React                 | Browser application view. |
+| backend-for-frontend | Redux and React Redux | Provide global store.     |
 
 ## User identification and Authentication
 
@@ -45,3 +46,8 @@ prefix: `@ouch-messenger`
 | :--------------------- | :-------------- | :------------------ |
 | amazon-sns-production  | Amazon SNS      | Delivery push       |
 | amazon-sns-development | Amazon SNS      | Delivery push (dev) |
+
+# AWS Deployment permission requirement
+
+- Node v10 (local)
+- permission for the lambda:CreateFunction

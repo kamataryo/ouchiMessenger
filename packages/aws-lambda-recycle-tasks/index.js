@@ -9,8 +9,8 @@ const get = () => {
   return new Promise((resolve, reject) =>
     client.scan(
       params,
-      (err, data) => (err ? reject(err) : resolve(data.Items)),
-    ),
+      (err, data) => (err ? reject(err) : resolve(data.Items))
+    )
   )
 }
 
@@ -22,7 +22,7 @@ const batch = tasks => {
           ...task,
           done: false,
           updatedBy: '==batch',
-          updatedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         })
       } else if (task.done) {
         prev.removingTaskIds.push(task.taskId)
@@ -32,28 +32,28 @@ const batch = tasks => {
     },
     {
       removingTaskIds: [],
-      resurrectingTask: [],
-    },
+      resurrectingTask: []
+    }
   )
 
   const params = {
     RequestItems: {
       [TableName]: [
         ...removingTaskIds.map(taskId => ({
-          DeleteRequest: { Key: { taskId } },
+          DeleteRequest: { Key: { taskId } }
         })),
         ...resurrectingTask.map(task => ({
-          PutRequest: { Item: task },
-        })),
-      ],
-    },
+          PutRequest: { Item: task }
+        }))
+      ]
+    }
   }
 
   return new Promise((resolve, reject) =>
     client.batchWrite(
       params,
-      (err, data) => (err ? reject(err) : resolve(data.Items)),
-    ),
+      (err, data) => (err ? reject(err) : resolve(data.Items))
+    )
   )
 }
 

@@ -12,6 +12,8 @@ const write = promisify(fs.writeFile)
 const PLIST_PATH = path.join(
   __dirname,
   '..',
+  'packages',
+  'mobile',
   'ios',
   'ouchiMessenger',
   'Info.plist',
@@ -35,6 +37,10 @@ read(PLIST_PATH)
     const nextPList = plist.build({
       ...plist.parse(data.toString()),
       CFBundleShortVersionString: nextSemver,
+    }, {
+      indent: '	', // Tab character
+      offset: -1,
+      newline: '\n'
     })
     return nextPList
   })

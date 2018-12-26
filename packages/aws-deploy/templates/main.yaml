@@ -1,0 +1,28 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Ouchi Messenger serverless templates - DB.
+
+Resources:
+
+  Database:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: "taskId"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "taskId"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  UserPoolClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: client,
+      GenerateSecret: false
+      UserPoolId: String
